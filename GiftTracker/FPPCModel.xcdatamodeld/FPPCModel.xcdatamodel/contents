@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="3396" systemVersion="12F37" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="FPPCAmount" representedClassName="FPPCAmount" syncable="YES">
+        <attribute name="value" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <relationship name="gift" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="FPPCGift" inverseName="amount" inverseEntity="FPPCGift" syncable="YES"/>
+        <relationship name="source" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="FPPCSource" inverseName="amount" inverseEntity="FPPCSource" syncable="YES"/>
+    </entity>
+    <entity name="FPPCGift" representedClassName="FPPCGift" syncable="YES">
+        <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="amount" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="FPPCAmount" inverseName="gift" inverseEntity="FPPCAmount" syncable="YES"/>
+    </entity>
+    <entity name="FPPCSource" representedClassName="FPPCSource" syncable="YES">
+        <attribute name="business" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="city" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="isLobbying" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="phone" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="state" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="street" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="street2" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="zipcode" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="amount" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="FPPCAmount" inverseName="source" inverseEntity="FPPCAmount" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="FPPCAmount" positionX="0" positionY="0" width="128" height="88"/>
+        <element name="FPPCGift" positionX="252" positionY="99" width="128" height="88"/>
+        <element name="FPPCSource" positionX="-281" positionY="18" width="128" height="208"/>
+    </elements>
+</model>
