@@ -12,6 +12,7 @@
 #import "FPPCAmount.h"
 #import "FPPCSourceFormViewController.h"
 #import "FPPCSourceViewController.h"
+#import "FPPCGiftsViewController.h"
 #import "UIColor+FPPC.h"
 #import "FPPCActionSheet.h"
 
@@ -56,15 +57,8 @@
     self.month.text = [self.months objectAtIndex:today.month-1];
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    
-    // Initialize gift labels with default values
-    [self updateGiftSummary];
-}
-
 - (void)viewDidAppear:(BOOL)animated {
-    [super reloadTableView];
+    [self reloadTableView];
     [TestFlight passCheckpoint:@"DASHBOARD - OPEN"];
 }
 
@@ -82,11 +76,11 @@
 #pragma
 
 - (void)reloadTableView {
-    [self updateGiftSummary];
+    [self reloadSummary];
     [super reloadTableView];
 }
 
-- (void)updateGiftSummary {
+- (void)reloadSummary {
     
     // Update month and year values
     NSDateComponents *today = [[NSCalendar currentCalendar] components:NSMonthCalendarUnit|NSYearCalendarUnit fromDate:[self date]];
@@ -172,7 +166,7 @@
         
         // Populate message
         [emailViewController setSubject:@"Excel file exported from Gift Tracking App"];
-        [emailViewController setMessageBody:@"This is an automated email sent from Android FPPC Gift Tracking App.\
+        [emailViewController setMessageBody:@"This is an automated email sent from iOS FPPC Gift Tracking App.\
          Attached is the filled out Schedule D of form 700." isHTML:NO];
         
         // Initialize spreadsheet
@@ -396,7 +390,10 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([[segue identifier] isEqualToString:@"editSource"] || [[segue identifier] isEqualToString:@"addGift"] || [[segue identifier] isEqualToString:@"viewSource"]) {
+    if ([[segue identifier] isEqualToString:@"presentGifts"]) {
+        [(FPPCGiftsViewController *)[segue destinationViewController] setDate:[self date]];
+    }
+    else if ([[segue identifier] isEqualToString:@"editSource"] || [[segue identifier] isEqualToString:@"addGift"] || [[segue identifier] isEqualToString:@"viewSource"]) {
         FPPCSource *source;
         NSIndexPath *indexPath;
         if ([self.searchDisplayController isActive]) {
@@ -454,7 +451,7 @@
 
 - (void)didAddGift
 {
-    [self reloadSummary];
+    [self reloadTableView];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 

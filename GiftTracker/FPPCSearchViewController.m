@@ -18,7 +18,6 @@
 #import "FPPCSourceViewController.h"
 
 @interface FPPCSearchViewController ()
-- (id)tableView:(UITableView *)tableView configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 @end
 
 @implementation FPPCSearchViewController

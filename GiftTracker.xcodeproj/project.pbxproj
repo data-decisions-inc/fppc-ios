@@ -29,13 +29,6 @@
 		D2C22B7117EA681B009C8556 /* FPPCModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D2C22B6F17EA681B009C8556 /* FPPCModel.xcdatamodeld */; };
 		D2C22B7817F091BB009C8556 /* libDHxls.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D2C22B7717F0918D009C8556 /* libDHxls.a */; };
 		D2C22B7B17F0937A009C8556 /* libTestFlight.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D2CAB76017E4C32B00D69104 /* libTestFlight.a */; };
-		D2C22BC617F137EB009C8556 /* Default_2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D2C22BC217F137EB009C8556 /* Default_2x.png */; };
-		D2C22BC717F137EB009C8556 /* Default_iPad_2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D2C22BC317F137EB009C8556 /* Default_iPad_2x.png */; };
-		D2C22BC817F137EB009C8556 /* Default_iPad.png in Resources */ = {isa = PBXBuildFile; fileRef = D2C22BC417F137EB009C8556 /* Default_iPad.png */; };
-		D2C22BC917F137EB009C8556 /* Default_R4.png in Resources */ = {isa = PBXBuildFile; fileRef = D2C22BC517F137EB009C8556 /* Default_R4.png */; };
-		D2C22BDE17F18104009C8556 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D24E46E217D6B11000AC886B /* Foundation.framework */; };
-		D2C22BDF17F18104009C8556 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D24E46E017D6B11000AC886B /* UIKit.framework */; };
-		D2C22BF017F18170009C8556 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D24E46E417D6B11000AC886B /* CoreGraphics.framework */; };
 		D2C9219A17E57036002FC3DC /* FPPCGiftsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D2C9219917E57036002FC3DC /* FPPCGiftsViewController.m */; };
 		D2C9219E17E570B1002FC3DC /* FPPCSourcesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D2C9219D17E570B1002FC3DC /* FPPCSourcesViewController.m */; };
 		D2CAAE9617E0C44E00EF2FF5 /* FPPCGiftFormCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D2CAAE9517E0C44E00EF2FF5 /* FPPCGiftFormCell.xib */; };
@@ -53,13 +46,6 @@
 		D2CAB76717E4C32C00D69104 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = D2CAB76117E4C32B00D69104 /* README.md */; };
 		D2CAB76817E4C32C00D69104 /* release_notes.md in Resources */ = {isa = PBXBuildFile; fileRef = D2CAB76217E4C32B00D69104 /* release_notes.md */; };
 		D2CAB76A17E4C34C00D69104 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D2CAB76917E4C34B00D69104 /* libz.dylib */; };
-		D2CAB76C17E4CB6D00D69104 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = D2CAB76B17E4CB6D00D69104 /* Icon.png */; };
-		D2CAB76E17E4CB7200D69104 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D2CAB76D17E4CB7200D69104 /* Icon@2x.png */; };
-		D2CAB77017E4CB7D00D69104 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = D2CAB76F17E4CB7D00D69104 /* Icon-72.png */; };
-		D2CAB77217E4CB8200D69104 /* Icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D2CAB77117E4CB8200D69104 /* Icon-72@2x.png */; };
-		D2CAB78217E5499500D69104 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = D2CAB78117E5499500D69104 /* Default.png */; };
-		D2CAB78417E5499B00D69104 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D2CAB78317E5499B00D69104 /* Default@2x.png */; };
-		D2CAB78517E549A200D69104 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D2CAB77F17E5497800D69104 /* Default-568h@2x.png */; };
 		D2CD555617DAF45B003BBE30 /* FPPCSourceCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D2CD555517DAF45B003BBE30 /* FPPCSourceCell.m */; };
 		D2CD555A17DAF469003BBE30 /* FPPCGiftCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D2CD555917DAF469003BBE30 /* FPPCGiftCell.m */; };
 		D2CD55A317DCD22B003BBE30 /* FPPCSourceCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D2CD55A217DCD22B003BBE30 /* FPPCSourceCell.xib */; };
@@ -83,13 +69,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = DEF79A2116E80B5200E4B803;
 			remoteInfo = DHxls;
-		};
-		D2C22BE917F18105009C8556 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = D24E46D517D6B11000AC886B /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = D24E46DC17D6B11000AC886B;
-			remoteInfo = GiftTracker;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -129,16 +108,11 @@
 		D24E472317D812E700AC886B /* FPPCViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FPPCViewController.m; sourceTree = "<group>"; };
 		D2C22B7017EA681B009C8556 /* FPPCModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = FPPCModel.xcdatamodel; sourceTree = "<group>"; };
 		D2C22B7217F0918C009C8556 /* DHxlsIOS.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = DHxlsIOS.xcodeproj; path = Vendor/xlslib/DHxls/DHxlsIOS.xcodeproj; sourceTree = "<group>"; };
-		D2C22BC217F137EB009C8556 /* Default_2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default_2x.png; sourceTree = SOURCE_ROOT; };
-		D2C22BC317F137EB009C8556 /* Default_iPad_2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default_iPad_2x.png; sourceTree = SOURCE_ROOT; };
-		D2C22BC417F137EB009C8556 /* Default_iPad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default_iPad.png; sourceTree = SOURCE_ROOT; };
-		D2C22BC517F137EB009C8556 /* Default_R4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default_R4.png; sourceTree = SOURCE_ROOT; };
-		D2C22BDB17F18103009C8556 /* UI Tests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "UI Tests.octest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D2C9219817E57036002FC3DC /* FPPCGiftsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FPPCGiftsViewController.h; sourceTree = "<group>"; };
 		D2C9219917E57036002FC3DC /* FPPCGiftsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FPPCGiftsViewController.m; sourceTree = "<group>"; };
 		D2C9219C17E570B1002FC3DC /* FPPCSourcesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FPPCSourcesViewController.h; sourceTree = "<group>"; };
 		D2C9219D17E570B1002FC3DC /* FPPCSourcesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FPPCSourcesViewController.m; sourceTree = "<group>"; };
-		D2CAAE9517E0C44E00EF2FF5 /* FPPCGiftFormCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = FPPCGiftFormCell.xib; path = ../FPPCGiftFormCell.xib; sourceTree = "<group>"; };
+		D2CAAE9517E0C44E00EF2FF5 /* FPPCGiftFormCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = FPPCGiftFormCell.xib; path = en.lproj/FPPCGiftFormCell.xib; sourceTree = "<group>"; };
 		D2CAAE9717E0C49900EF2FF5 /* FPPCGiftFormCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FPPCGiftFormCell.h; sourceTree = "<group>"; };
 		D2CAAE9817E0C49900EF2FF5 /* FPPCGiftFormCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FPPCGiftFormCell.m; sourceTree = "<group>"; };
 		D2CAAE9A17E1FFE900EF2FF5 /* FPPCAmount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FPPCAmount.h; sourceTree = "<group>"; };
@@ -167,21 +141,14 @@
 		D2CAB76417E4C32B00D69104 /* TestFlight+ManualSessions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TestFlight+ManualSessions.h"; sourceTree = "<group>"; };
 		D2CAB76517E4C32B00D69104 /* TestFlight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestFlight.h; sourceTree = "<group>"; };
 		D2CAB76917E4C34B00D69104 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
-		D2CAB76B17E4CB6D00D69104 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = ../Icon.png; sourceTree = "<group>"; };
-		D2CAB76D17E4CB7200D69104 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x.png"; path = "../Icon@2x.png"; sourceTree = "<group>"; };
-		D2CAB76F17E4CB7D00D69104 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72.png"; path = "../Icon-72.png"; sourceTree = "<group>"; };
-		D2CAB77117E4CB8200D69104 /* Icon-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72@2x.png"; path = "../Icon-72@2x.png"; sourceTree = "<group>"; };
-		D2CAB77F17E5497800D69104 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../Default-568h@2x.png"; sourceTree = "<group>"; };
-		D2CAB78117E5499500D69104 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = ../Default.png; sourceTree = "<group>"; };
-		D2CAB78317E5499B00D69104 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x.png"; path = "../Default@2x.png"; sourceTree = "<group>"; };
 		D2CD555417DAF45B003BBE30 /* FPPCSourceCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FPPCSourceCell.h; sourceTree = "<group>"; };
 		D2CD555517DAF45B003BBE30 /* FPPCSourceCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FPPCSourceCell.m; sourceTree = "<group>"; };
 		D2CD555817DAF469003BBE30 /* FPPCGiftCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FPPCGiftCell.h; sourceTree = "<group>"; };
 		D2CD555917DAF469003BBE30 /* FPPCGiftCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FPPCGiftCell.m; sourceTree = "<group>"; };
-		D2CD55A217DCD22B003BBE30 /* FPPCSourceCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FPPCSourceCell.xib; sourceTree = "<group>"; };
-		D2CD55A417DCD23C003BBE30 /* FPPCGiftCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FPPCGiftCell.xib; sourceTree = "<group>"; };
-		D2CD55A817DF6A1F003BBE30 /* FPPCActionSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FPPCActionSheet.h; path = ../FPPCActionSheet.h; sourceTree = "<group>"; };
-		D2CD55A917DF6A20003BBE30 /* FPPCActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FPPCActionSheet.m; path = ../FPPCActionSheet.m; sourceTree = "<group>"; };
+		D2CD55A217DCD22B003BBE30 /* FPPCSourceCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = FPPCSourceCell.xib; path = en.lproj/FPPCSourceCell.xib; sourceTree = "<group>"; };
+		D2CD55A417DCD23C003BBE30 /* FPPCGiftCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = FPPCGiftCell.xib; path = en.lproj/FPPCGiftCell.xib; sourceTree = "<group>"; };
+		D2CD55A817DF6A1F003BBE30 /* FPPCActionSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FPPCActionSheet.h; sourceTree = "<group>"; };
+		D2CD55A917DF6A20003BBE30 /* FPPCActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FPPCActionSheet.m; sourceTree = "<group>"; };
 		D2D77F9617D8D15100C88F06 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		D2EBA0C817D84676005B8C94 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -204,16 +171,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D2C22BD817F18103009C8556 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				D2C22BF017F18170009C8556 /* CoreGraphics.framework in Frameworks */,
-				D2C22BDF17F18104009C8556 /* UIKit.framework in Frameworks */,
-				D2C22BDE17F18104009C8556 /* Foundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -231,7 +188,6 @@
 			isa = PBXGroup;
 			children = (
 				D24E46DD17D6B11000AC886B /* GiftTracker.app */,
-				D2C22BDB17F18103009C8556 /* UI Tests.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -266,8 +222,6 @@
 		D24E46E717D6B11000AC886B /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				D2CAB78717E549EA00D69104 /* App Icons */,
-				D2CAB78617E549C400D69104 /* Launch Images */,
 				D2CAB76917E4C34B00D69104 /* libz.dylib */,
 				D24E46E817D6B11000AC886B /* GiftTracker-Info.plist */,
 				D24E46E917D6B11000AC886B /* InfoPlist.strings */,
@@ -404,31 +358,6 @@
 			path = Vendor/TestFlightSDK2.0.0;
 			sourceTree = "<group>";
 		};
-		D2CAB78617E549C400D69104 /* Launch Images */ = {
-			isa = PBXGroup;
-			children = (
-				D2C22BC217F137EB009C8556 /* Default_2x.png */,
-				D2C22BC317F137EB009C8556 /* Default_iPad_2x.png */,
-				D2C22BC417F137EB009C8556 /* Default_iPad.png */,
-				D2C22BC517F137EB009C8556 /* Default_R4.png */,
-				D2CAB78317E5499B00D69104 /* Default@2x.png */,
-				D2CAB78117E5499500D69104 /* Default.png */,
-				D2CAB77F17E5497800D69104 /* Default-568h@2x.png */,
-			);
-			name = "Launch Images";
-			sourceTree = "<group>";
-		};
-		D2CAB78717E549EA00D69104 /* App Icons */ = {
-			isa = PBXGroup;
-			children = (
-				D2CAB77117E4CB8200D69104 /* Icon-72@2x.png */,
-				D2CAB76F17E4CB7D00D69104 /* Icon-72.png */,
-				D2CAB76D17E4CB7200D69104 /* Icon@2x.png */,
-				D2CAB76B17E4CB6D00D69104 /* Icon.png */,
-			);
-			name = "App Icons";
-			sourceTree = "<group>";
-		};
 		D2D77F9C17D8DAB600C88F06 /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -463,24 +392,6 @@
 			productName = GiftTracker;
 			productReference = D24E46DD17D6B11000AC886B /* GiftTracker.app */;
 			productType = "com.apple.product-type.application";
-		};
-		D2C22BDA17F18103009C8556 /* UI Tests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = D2C22BEB17F18105009C8556 /* Build configuration list for PBXNativeTarget "UI Tests" */;
-			buildPhases = (
-				D2C22BD717F18103009C8556 /* Sources */,
-				D2C22BD817F18103009C8556 /* Frameworks */,
-				D2C22BD917F18103009C8556 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				D2C22BEA17F18105009C8556 /* PBXTargetDependency */,
-			);
-			name = "UI Tests";
-			productName = "UI Tests";
-			productReference = D2C22BDB17F18103009C8556 /* UI Tests.octest */;
-			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -522,7 +433,6 @@
 			projectRoot = "";
 			targets = (
 				D24E46DC17D6B11000AC886B /* GiftTracker */,
-				D2C22BDA17F18103009C8556 /* UI Tests */,
 			);
 		};
 /* End PBXProject section */
@@ -549,26 +459,8 @@
 				D2CD55A517DCD23C003BBE30 /* FPPCGiftCell.xib in Resources */,
 				D2CAAE9617E0C44E00EF2FF5 /* FPPCGiftFormCell.xib in Resources */,
 				D2CAB76717E4C32C00D69104 /* README.md in Resources */,
-				D2C22BC717F137EB009C8556 /* Default_iPad_2x.png in Resources */,
 				D2CAB76817E4C32C00D69104 /* release_notes.md in Resources */,
-				D2CAB76C17E4CB6D00D69104 /* Icon.png in Resources */,
 				D2280E7F17F26E9200FEE521 /* MainStoryboard_iPhone.storyboard in Resources */,
-				D2CAB76E17E4CB7200D69104 /* Icon@2x.png in Resources */,
-				D2CAB77017E4CB7D00D69104 /* Icon-72.png in Resources */,
-				D2CAB77217E4CB8200D69104 /* Icon-72@2x.png in Resources */,
-				D2CAB78217E5499500D69104 /* Default.png in Resources */,
-				D2CAB78417E5499B00D69104 /* Default@2x.png in Resources */,
-				D2CAB78517E549A200D69104 /* Default-568h@2x.png in Resources */,
-				D2C22BC617F137EB009C8556 /* Default_2x.png in Resources */,
-				D2C22BC917F137EB009C8556 /* Default_R4.png in Resources */,
-				D2C22BC817F137EB009C8556 /* Default_iPad.png in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		D2C22BD917F18103009C8556 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -609,13 +501,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D2C22BD717F18103009C8556 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -623,11 +508,6 @@
 			isa = PBXTargetDependency;
 			name = DHxls;
 			targetProxy = D2C22B7917F09318009C8556 /* PBXContainerItemProxy */;
-		};
-		D2C22BEA17F18105009C8556 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = D24E46DC17D6B11000AC886B /* GiftTracker */;
-			targetProxy = D2C22BE917F18105009C8556 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -767,108 +647,6 @@
 			};
 			name = Release;
 		};
-		D2C22BEC17F18105009C8556 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "UI Tests/UI Tests-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				INFOPLIST_FILE = "UI Tests/UI Tests-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-framework",
-					XCTest,
-					"-ObjC",
-				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				WRAPPER_EXTENSION = octest;
-			};
-			name = Debug;
-		};
-		D2C22BED17F18105009C8556 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				ENABLE_NS_ASSERTIONS = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "UI Tests/UI Tests-Prefix.pch";
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				INFOPLIST_FILE = "UI Tests/UI Tests-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-framework",
-					XCTest,
-					"-ObjC",
-				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				WRAPPER_EXTENSION = octest;
-			};
-			name = Release;
-		};
-		D2C22BEE17F18105009C8556 /* AdHoc */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				ENABLE_NS_ASSERTIONS = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "UI Tests/UI Tests-Prefix.pch";
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				INFOPLIST_FILE = "UI Tests/UI Tests-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-framework",
-					XCTest,
-					"-ObjC",
-				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				WRAPPER_EXTENSION = octest;
-			};
-			name = AdHoc;
-		};
 		D2CAB77317E4CC1E00D69104 /* AdHoc */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -940,16 +718,6 @@
 				D24E470417D6B11100AC886B /* Debug */,
 				D24E470517D6B11100AC886B /* Release */,
 				D2CAB77417E4CC1E00D69104 /* AdHoc */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		D2C22BEB17F18105009C8556 /* Build configuration list for PBXNativeTarget "UI Tests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				D2C22BEC17F18105009C8556 /* Debug */,
-				D2C22BED17F18105009C8556 /* Release */,
-				D2C22BEE17F18105009C8556 /* AdHoc */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

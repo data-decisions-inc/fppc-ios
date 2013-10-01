@@ -20,7 +20,6 @@ static FPPCGiftSearchViewController *SearchViewController;
 
 @implementation FPPCGiftSearchViewController
 @synthesize giftCell;
-@synthesize fetchedResultsController = _fetchedResultsController;
 @synthesize navBar;
 
 - (void)viewDidLoad {
@@ -54,39 +53,6 @@ static FPPCGiftSearchViewController *SearchViewController;
     
     // Update custom cell
     [self tableView:(UITableView *)tableView configureCell:cell atIndexPath:indexPath];
-    return cell;
-}
-
-- (id)tableView:(UITableView *)tableView configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
-    
-    // We maintain two sets of data (one for search results and one pre-search)
-    // Fetch the appropriate data for the active tableview
-    FPPCGift *gift;
-    if ([tableView isEqual:self.searchDisplayController.searchResultsTableView]) {
-        gift = [self.searchResults objectAtIndex:indexPath.row];
-    }
-    else {
-        gift = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    }
-    
-    // Display name, sources, and total amount
-    ((FPPCGiftCell *)cell).name.text = gift.name;
-    NSMutableSet *sources = [[NSMutableSet alloc] init];
-    double total = 0;
-    for (FPPCAmount *amount in gift.amount) {
-        total += [amount.value doubleValue];
-        for (FPPCSource *source in amount.source) {
-            [sources addObject:source];
-        }
-    }
-    ((FPPCGiftCell *)cell).sources.text = (sources.count == 0) ? @"": [NSString stringWithFormat:@"From: %@",[[[sources valueForKey:@"name"] allObjects] componentsJoinedByString:@", "]];
-    ((FPPCGiftCell *)cell).totalValue.text = [self.currencyFormatter stringFromNumber:[NSNumber numberWithDouble:total]];
-    
-    // Display date
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"MM/dd/yyyy"];
-    ((FPPCGiftCell *)cell).date.text = [formatter stringFromDate:gift.date];
-
     return cell;
 }
 

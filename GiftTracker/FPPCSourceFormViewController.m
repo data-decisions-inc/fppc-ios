@@ -71,6 +71,9 @@
         else
             [isLobbying_iOS6 setOn:[source.isLobbying boolValue] ];
     }
+    
+    // Set scrollview content size
+    self.scrollView.contentSize = self.view.frame.size;
 }
 
 #pragma mark - Navigation Bar
@@ -168,17 +171,16 @@
 }
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
-    // If active text field is hidden by keyboard, scroll it so it's visible
-    // Your application might not need or want this behavior.
-    CGRect aRect = self.view.frame;
-    aRect.size.height -= (keyboardSize.height+self.keyboardToolbar.frame.size.height+navigationBar.frame.size.height);
-    aRect.origin.y = navigationBar.frame.size.height;
-    CGPoint aPoint = CGPointMake(0,self.keyboardToolbar.textField.frame.origin.y-self.keyboardToolbar.textField.frame.size.height+navigationBar.frame.size.height);
     
-    if (!CGRectContainsPoint(aRect, aPoint) ) {
-        CGPoint scrollPoint = CGPointMake(0.0, self.keyboardToolbar.textField.frame.origin.y+aRect.size.height-keyboardSize.height+self.navigationBar.frame.size.height-self.keyboardToolbar.textField.frame.size.height);
-        [scrollView setContentOffset:scrollPoint animated:YES];
-    }
+    // Ensure the active textfield is visible
+    UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, keyboardSize.height, 0.0);
+    scrollView.contentInset = contentInsets;
+    scrollView.scrollIndicatorInsets = contentInsets;
+    
+    CGRect aRect = self.view.frame;
+    aRect.origin.y = navigationBar.frame.size.height;
+    aRect.size.height -= (keyboardSize.height+self.keyboardToolbar.frame.size.height+navigationBar.frame.size.height*2);
+    [self.scrollView scrollRectToVisible:self.keyboardToolbar.textField.frame animated:YES];
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
@@ -201,12 +203,10 @@
 //    }
     
     [textField resignFirstResponder];
-    if (self.scrollView)[self.scrollView setContentOffset:CGPointZero animated:YES];
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [textField resignFirstResponder];
-    if (self.scrollView)[self.scrollView setContentOffset:CGPointZero animated:YES];
     return YES;
 }
 
@@ -229,7 +229,6 @@
 #pragma mark - Keyboard notifications
 #pragma 
 
-// Call this method somewhere in your view controller setup code.
 - (void)registerForKeyboardNotifications
 {
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -242,31 +241,24 @@
     
 }
 
-// Called when the UIKeyboardDidShowNotification is sent.
 - (void)keyboardWasShown:(NSNotification*)aNotification
 {
+    // Ensure the active textfield is visible
     NSDictionary* info = [aNotification userInfo];
     keyboardSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
-
-    // If active text field is hidden by keyboard, scroll it so it's visible
-    // Your application might not need or want this behavior.
-    CGRect aRect = self.view.frame;
-    aRect.size.height -= (keyboardSize.height+self.keyboardToolbar.frame.size.height+navigationBar.frame.size.height);
-    aRect.origin.y = navigationBar.frame.size.height;
-    CGPoint aPoint = CGPointMake(0,self.keyboardToolbar.textField.frame.origin.y-self.keyboardToolbar.textField.frame.size.height+navigationBar.frame.size.height);
     
-    if (!CGRectContainsPoint(aRect, aPoint) ) {
-        CGPoint scrollPoint = CGPointMake(0.0, self.keyboardToolbar.textField.frame.origin.y+aRect.size.height-keyboardSize.height+self.navigationBar.frame.size.height-self.keyboardToolbar.textField.frame.size.height);
-        [scrollView setContentOffset:scrollPoint animated:YES];
-    }
-}
-
-// Called when the UIKeyboardWillHideNotification is sent
-- (void)keyboardWillBeHidden:(NSNotification*)aNotification
-{
-    UIEdgeInsets contentInsets = UIEdgeInsetsZero;
+    UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, keyboardSize.height, 0.0);
     scrollView.contentInset = contentInsets;
     scrollView.scrollIndicatorInsets = contentInsets;
+
+    CGRect aRect = self.view.frame;
+    aRect.origin.y = navigationBar.frame.size.height;
+    aRect.size.height -= (keyboardSize.height+self.keyboardToolbar.frame.size.height+navigationBar.frame.size.height*2);
+    [self.scrollView scrollRectToVisible:self.keyboardToolbar.textField.frame animated:YES];
+}
+
+- (void)keyboardWillBeHidden:(NSNotification*)aNotification
+{
 }
 
 @end

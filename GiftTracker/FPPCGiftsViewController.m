@@ -8,9 +8,47 @@
 
 #import "FPPCGiftsViewController.h"
 #import "FPPCDashboardViewController.h"
+#import "FPPCAmount.h"
 
 @implementation FPPCGiftsViewController
 @synthesize fetchedResultsController = _fetchedResultsController;
+@synthesize date;
+
+#pragma mark - Table view
+#pragma
+
+- (id)tableView:(UITableView *)tableView configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    
+    // We maintain two sets of data (one for search results and one pre-search)
+    // Fetch the appropriate data for the active tableview
+    FPPCGift *gift;
+    if ([tableView isEqual:self.searchDisplayController.searchResultsTableView]) {
+        gift = [self.searchResults objectAtIndex:indexPath.row];
+    }
+    else {
+        gift = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    }
+    
+    // Display name, sources, and total amount
+    ((FPPCGiftCell *)cell).name.text = gift.name;
+    NSMutableSet *sources = [[NSMutableSet alloc] init];
+    double total = 0;
+    for (FPPCAmount *amount in gift.amount) {
+        total += [amount.value doubleValue];
+        for (FPPCSource *source in amount.source) {
+            [sources addObject:source];
+        }
+    }
+    ((FPPCGiftCell *)cell).sources.text = (sources.count == 0) ? @"": [NSString stringWithFormat:@"From: %@",[[[sources valueForKey:@"name"] allObjects] componentsJoinedByString:@", "]];
+    ((FPPCGiftCell *)cell).totalValue.text = [self.currencyFormatter stringFromNumber:[NSNumber numberWithDouble:total]];
+    
+    // Display date
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"MM/dd/yyyy"];
+    ((FPPCGiftCell *)cell).date.text = [formatter stringFromDate:gift.date];
+    
+    return cell;
+}
 
 #pragma mark - Navigation bar
 #pragma
@@ -44,6 +82,22 @@
     
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];
+    
+    // Only fetch gifts for the selected year
+    NSDate *yearStart, *yearEnd;
+    NSDateComponents *year = [[NSCalendar currentCalendar] components:NSYearCalendarUnit fromDate:date];
+    
+    NSDateComponents *components = [[NSDateComponents alloc] init];
+    [components setDay:1];
+    [components setMonth:1];
+    [components setYear:year.year];
+    yearStart = [[NSCalendar currentCalendar] dateFromComponents:components];
+    [components setDay:31];
+    [components setMonth:12];
+    yearEnd = [[NSCalendar currentCalendar] dateFromComponents:components];
+    
+    NSPredicate *datePredicate = [NSPredicate predicateWithFormat:@"(date >= %@) AND (date <= %@)", yearStart, yearEnd];
+    [fetchRequest setPredicate:datePredicate];
     
     // Edit the sort key as appropriate.
     NSSortDescriptor *sort = [[NSSortDescriptor alloc]

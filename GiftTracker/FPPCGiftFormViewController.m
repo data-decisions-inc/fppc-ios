@@ -238,6 +238,7 @@
         [[segue destinationViewController] setDelegate:self];
         [[segue destinationViewController] setDate:[self date]];
         [[segue destinationViewController] setDateComponents:[self dateComponents]];
+        [[segue destinationViewController] setGift:self.gift];
     }
 }
 

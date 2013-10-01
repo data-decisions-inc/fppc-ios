@@ -15,7 +15,7 @@
 @end
 
 @implementation FPPCSourceViewController
-@synthesize source;
+@synthesize source = _source;
 @synthesize name, totalReceived;
 @synthesize sms, email, call;
 @synthesize delegate;
@@ -47,18 +47,18 @@
                                   nil];
     
     // Prepare name, lobbying
-    NSString *lobbying = [source.isLobbying boolValue] ? @" - Lobbyist" : @"";
-    NSMutableAttributedString *regString = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@%@",source.name,lobbying,nil] attributes:attributes1];
+    NSString *lobbying = [self.source.isLobbying boolValue] ? @" - Lobbyist" : @"";
+    NSMutableAttributedString *regString = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@%@",self.source.name,lobbying,nil] attributes:attributes1];
     
     // Prepare business
-    [regString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@",(source.business.length != 0) ? [NSString stringWithFormat:@"\n%@",source.business,nil] : @""] attributes:attributes2]];
+    [regString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@",(self.source.business.length != 0) ? [NSString stringWithFormat:@"\n%@",self.source.business,nil] : @""] attributes:attributes2]];
     
     // Prepare contact info
     NSArray *addressField = @[@"street", @"street2", @"city", @"state", @"zipcode"];
     NSMutableArray *addressArray = [[NSMutableArray alloc] init];
     for (NSString *field in addressField) {
-        if (((NSString *)[source valueForKey:field]).length != 0)
-            [addressArray addObject:[source valueForKey:field]];
+        if (((NSString *)[self.source valueForKey:field]).length != 0)
+            [addressArray addObject:[self.source valueForKey:field]];
     }
     NSString *address = [addressArray componentsJoinedByString:@", "];
     [regString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@",(address.length != 0) ? [NSString stringWithFormat:@"\n%@",address,nil] : @"",nil] attributes:attributes3]];
@@ -70,7 +70,7 @@
     self.name.attributedText = regString;
     
     // Disable a contact option if that kind of contact information is unavailable
-    if (source.phone.length == 0) {
+    if (self.source.phone.length == 0) {
         [self.call setEnabled:NO];
         [self.sms setEnabled:NO];
         [self.call setAlpha:0.45f];
@@ -81,7 +81,7 @@
         [self.call setAlpha:1.0f];
         [self.sms setAlpha:1.0f];
     }
-    if (source.email.length == 0) {
+    if (self.source.email.length == 0) {
         [self.email setEnabled:NO];
         [self.email setAlpha:0.45f];
     } else {
@@ -110,6 +110,43 @@
     [self reloadSummary];
 }
 
+#pragma mark - Table view
+#pragma
+
+- (id)tableView:(UITableView *)tableView configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    
+    // We maintain two sets of data (one for search results and one pre-search)
+    // Fetch the appropriate data for the active tableview
+    FPPCGift *gift;
+    if ([tableView isEqual:self.searchDisplayController.searchResultsTableView]) {
+        gift = [self.searchResults objectAtIndex:indexPath.row];
+    }
+    else {
+        gift = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    }
+    
+    // Display name, sources, and amount contributed by this source
+    ((FPPCGiftCell *)cell).name.text = gift.name;
+    NSMutableSet *sources = [[NSMutableSet alloc] init];
+    
+    double total = 0;
+    for (FPPCAmount *amount in gift.amount) {
+        for (FPPCSource *source in amount.source) {
+            [sources addObject:source];
+            if ([source isEqual:self.source]) total = [amount.value doubleValue];
+        }
+    }
+    ((FPPCGiftCell *)cell).sources.text = (sources.count == 0) ? @"": [NSString stringWithFormat:@"From: %@",[[[sources valueForKey:@"name"] allObjects] componentsJoinedByString:@", "]];
+    ((FPPCGiftCell *)cell).totalValue.text = [self.currencyFormatter stringFromNumber:[NSNumber numberWithDouble:total]];
+    
+    // Display date
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"MM/dd/yyyy"];
+    ((FPPCGiftCell *)cell).date.text = [formatter stringFromDate:gift.date];
+    
+    return cell;
+}
+
 #pragma mark - Contact the source
 #pragma
 
@@ -121,7 +158,7 @@
         messageViewController.messageComposeDelegate = self;
         
         // Populate sms
-        messageViewController.recipients = [NSArray arrayWithObject:source.phone];
+        messageViewController.recipients = [NSArray arrayWithObject:self.source.phone];
         
         // Setup custom navbar
         UIColor *navBarColor = [UIColor FPPCBlueColor];
@@ -140,7 +177,7 @@
         emailViewController.mailComposeDelegate = self;
         
         // Populate message
-        [emailViewController setToRecipients:[NSArray arrayWithObject:source.email]];
+        [emailViewController setToRecipients:[NSArray arrayWithObject:self.source.email]];
         
         // Setup custom navbar
         UIColor *navBarColor = [UIColor FPPCBlueColor];
@@ -154,7 +191,7 @@
 - (IBAction)call:(id)sender {
     // Optional TODO: iOS does not let you dial a number with an access code in it. Consider adding a popup with an access code if the user saves one for a number
     
-    NSURL *url = [NSURL URLWithString:source.phone];
+    NSURL *url = [NSURL URLWithString:self.source.phone];
     [[UIApplication sharedApplication] openURL:url];
 }
 

@@ -20,6 +20,8 @@
     [numberFormatter setCurrencySymbol:@"$"];
     [numberFormatter setMaximumFractionDigits:2];
     [numberFormatter setMinimumFractionDigits:2];
+    [numberFormatter setNegativePrefix:[NSString stringWithFormat:@"-%@", [numberFormatter currencySymbol]]];
+    [numberFormatter setNegativeSuffix:@""];
     return numberFormatter;
 }
 

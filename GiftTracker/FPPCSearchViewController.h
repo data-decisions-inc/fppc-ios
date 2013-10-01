@@ -24,6 +24,7 @@
 - (void)deselectTableViewCell;
 - (void)reloadTableView;
 - (void)reloadSummary;
+- (id)tableView:(UITableView *)tableView configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 
 enum kActionSheet {
     EDIT = 1,
