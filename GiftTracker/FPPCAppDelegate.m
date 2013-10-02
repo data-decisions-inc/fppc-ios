@@ -26,7 +26,6 @@
 #pragma
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    
     [self initializeCoreDataStack];
     
     [TestFlight takeOff:@"a5061ce9-4abd-407f-a352-983aadb23852"];

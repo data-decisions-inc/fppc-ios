@@ -27,6 +27,7 @@
 @synthesize keyboardToolbar;
 @synthesize monthPickerView, yearPickerView;
 @synthesize months;
+@synthesize fetchedResultsController = _fetchedResultsController;
 
 #pragma mark - View lifecycle
 #pragma
@@ -62,7 +63,52 @@
     [TestFlight passCheckpoint:@"DASHBOARD - OPEN"];
 }
 
+#pragma mark - FetchedResults
+#pragma
+
+- (NSFetchedResultsController *)fetchedResultsController {
+    if (_fetchedResultsController != nil) {
+        return _fetchedResultsController;
+    }
+    
+    // Set up the fetched results controller.
+    // Create the fetch request for the entity.
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    
+    // Edit the entity name as appropriate.
+    NSEntityDescription *entity = [NSEntityDescription
+                                   entityForName:@"FPPCSource" inManagedObjectContext:((FPPCAppDelegate *)[[UIApplication sharedApplication] delegate]).managedObjectContext];
+    [fetchRequest setEntity:entity];
+    
+    // Set the batch size to a suitable number.
+    [fetchRequest setFetchBatchSize:20];
+    
+    // Edit the sort key as appropriate.
+    NSSortDescriptor *sort = [[NSSortDescriptor alloc]
+                              initWithKey:@"name" ascending:YES];
+    [fetchRequest setSortDescriptors:[NSArray arrayWithObject:sort]];
+    
+    // Edit the section name key path and cache name if appropriate.
+    // nil for section name key path means "no sections".
+    NSFetchedResultsController *theFetchedResultsController =
+    [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
+                                        managedObjectContext:((FPPCAppDelegate *)[[UIApplication sharedApplication] delegate]).managedObjectContext sectionNameKeyPath:nil
+                                                   cacheName:@"Root"];
+    
+    theFetchedResultsController.delegate = self;
+    self.fetchedResultsController = theFetchedResultsController;
+    
+    NSError *error = nil;
+	if (![self.fetchedResultsController performFetch:&error]) {
+	    TFLog(@"ERROR: Failed to perform fetch - %@, %@", error, [error userInfo]);
+	    [self showErrorMessage];
+	}
+    
+    return _fetchedResultsController;
+}
+
 #pragma mark - Table view
+#pragma
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     FPPCActionSheet *sourceActionSheet = [[FPPCActionSheet alloc] initWithTitle:@"What would you like to do?" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Delete" otherButtonTitles:@"Edit",@"Add Gift",@"Details", nil];
@@ -446,6 +492,7 @@
 #pragma 
 - (void)didAddSource:(FPPCSource *)source
 {
+    [self reloadTableView];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
