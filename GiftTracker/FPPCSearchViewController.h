@@ -19,7 +19,6 @@
 @property (strong, nonatomic) NSArray *searchResults;
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 @property (strong, nonatomic) FPPCViewController *delegate;
-+ (FPPCSearchViewController *)searchViewController;
 - (void)filterContentForSearchText:(NSString*)searchText scope:(NSString*)scope;
 - (void)deselectTableViewCell;
 - (void)reloadTableView;

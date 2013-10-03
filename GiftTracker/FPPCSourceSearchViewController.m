@@ -19,21 +19,9 @@
 
 @end
 
-static FPPCSourceSearchViewController *SearchViewController;
-
 @implementation FPPCSourceSearchViewController
 @synthesize fetchedResultsController = _fetchedResultsController;
 @synthesize date;
-
-#pragma mark - Factories for singleton instances
-#pragma
-
-+ (FPPCSourceSearchViewController *)searchViewController {
-    if (!SearchViewController) {
-        SearchViewController = [[FPPCSourceSearchViewController alloc] init];
-    }
-    return SearchViewController;
-}
 
 #pragma mark - TableView
 #pragma
@@ -73,9 +61,9 @@ static FPPCSourceSearchViewController *SearchViewController;
     ((FPPCSourceCell *)cell).business.text = [NSString stringWithFormat:@"%@%@",source.business ? source.business : @"",lobbying,nil];
     
     // Display remaining gift limit
-    double limit = [self giftLimitWithSource:source forDate:self.date];
-    NSString *limitString = [self.currencyFormatter stringFromNumber:[NSNumber numberWithDouble:limit]];
-    ((FPPCSourceCell *)cell).remainingLimit.textColor = (limit < 0.0) ? [UIColor redColor] : [UIColor FPPCGreenColor];
+    NSDecimalNumber *limit = [self giftLimitWithSource:source forDate:self.date];
+    NSString *limitString = [self.currencyFormatter stringFromNumber:limit];
+    ((FPPCSourceCell *)cell).remainingLimit.textColor = ([limit compare:[NSDecimalNumber zero]] == NSOrderedAscending) ? [UIColor redColor] : [UIColor FPPCGreenColor];
     ((FPPCSourceCell *)cell).remainingLimit.text = limitString;
     
     return cell;
@@ -103,31 +91,31 @@ static FPPCSourceSearchViewController *SearchViewController;
  
  Right now, these limits are hard-coded and can be updated manually via updates to the application. In the future, it is recommended that these values be pulled from a web page that is updated when new legislation comes through.
  */
-- (double)giftLimitWithSource:(FPPCSource *)source forDate:(NSDate *)date {
-    double limit;
+- (NSDecimalNumber *)giftLimitWithSource:(FPPCSource *)source forDate:(NSDate *)date {
+    NSDecimalNumber *limit;
     
     // Calculate remaining gift limit for lobbying sources
     if ([source.isLobbying boolValue]) {
-        limit = LOBBYING_LIMIT;
+        limit = [NSDecimalNumber decimalNumberWithDecimal:[[NSNumber numberWithInt:LOBBYING_LIMIT] decimalValue]];
         for (FPPCAmount *amount in source.amount) {
-            FPPCGift *gift = ((FPPCGift *)[amount.gift anyObject]);
+            FPPCGift *gift = amount.gift;
              NSDateComponents *amountDateComponents = [[NSCalendar currentCalendar] components:NSMonthCalendarUnit|NSYearCalendarUnit fromDate:gift.date];
             NSDateComponents *rangeDateComponents = [[NSCalendar currentCalendar] components:NSMonthCalendarUnit|NSYearCalendarUnit fromDate:[self date]];
             if(amountDateComponents.year == rangeDateComponents.year && amountDateComponents.month == rangeDateComponents.month) {
-                limit -= [amount.value doubleValue];
+                limit = [limit decimalNumberBySubtracting:[NSDecimalNumber decimalNumberWithDecimal:[amount.value decimalValue]]];
             }
         }
     }
     
     // Calculate remaining gift limit for non-lobbying sources
     else {
-        limit = NON_LOBBYING_LIMIT;
+        limit = [NSDecimalNumber decimalNumberWithDecimal:[[NSNumber numberWithInt:NON_LOBBYING_LIMIT] decimalValue]];
         for (FPPCAmount *amount in source.amount) {
-            FPPCGift *gift = ((FPPCGift *)[amount.gift anyObject]);
+            FPPCGift *gift = amount.gift;
             NSDateComponents *amountDateComponents = [[NSCalendar currentCalendar] components:NSYearCalendarUnit fromDate:gift.date];
             NSDateComponents *rangeDateComponents = [[NSCalendar currentCalendar] components:NSYearCalendarUnit fromDate:[self date]];
             if(amountDateComponents.year == rangeDateComponents.year) {
-                limit -= [amount.value doubleValue];
+                limit = [limit decimalNumberBySubtracting:[NSDecimalNumber decimalNumberWithDecimal:[amount.value decimalValue]]];
             }
         }
     }

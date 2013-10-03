@@ -16,10 +16,12 @@
 #import "FPPCSourceFormViewController.h"
 
 @protocol FPPCGiftFormViewControllerDelegate
-- (void)didAddGift;
+- (void)didUpdateGift;
 @end
 
-@interface FPPCGiftFormViewController : FPPCViewController <UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, FPPCToolbarDelegate, UITableViewDataSource, UITableViewDelegate, NSFetchedResultsControllerDelegate, UIActionSheetDelegate, FPPCSourceSearchViewControllerDelegate>
+@interface FPPCGiftFormViewController : FPPCViewController <UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, FPPCToolbarDelegate, UITableViewDataSource, UITableViewDelegate, NSFetchedResultsControllerDelegate, UIActionSheetDelegate, FPPCSourceSearchViewControllerDelegate> {
+    CGSize keyboardSize;
+}
 
 @property (nonatomic, strong) IBOutlet UITextField *name;
 @property (nonatomic, strong) IBOutlet UITextField *month;
@@ -28,7 +30,7 @@
 @property (nonatomic, strong) IBOutlet UILabel *total;
 @property (nonatomic, strong) FPPCToolbar *keyboardToolbar;
 @property (nonatomic, strong) FPPCGift *gift;
-@property (nonatomic, strong) FPPCViewController<FPPCGiftFormViewControllerDelegate> *delegate;
+@property (nonatomic, weak)   id<FPPCGiftFormViewControllerDelegate> delegate;
 @property (nonatomic, strong) FPPCSource *source;
 - (NSDate *)date;
 - (NSDateComponents *)dateComponents;

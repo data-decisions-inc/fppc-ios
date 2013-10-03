@@ -2,8 +2,8 @@
 <model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="3396" systemVersion="12F37" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="FPPCAmount" representedClassName="FPPCAmount" syncable="YES">
         <attribute name="value" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
-        <relationship name="gift" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="FPPCGift" inverseName="amount" inverseEntity="FPPCGift" syncable="YES"/>
-        <relationship name="source" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="FPPCSource" inverseName="amount" inverseEntity="FPPCSource" syncable="YES"/>
+        <relationship name="gift" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="FPPCGift" inverseName="amount" inverseEntity="FPPCGift" syncable="YES"/>
+        <relationship name="source" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="FPPCSource" inverseName="amount" inverseEntity="FPPCSource" syncable="YES"/>
     </entity>
     <entity name="FPPCGift" representedClassName="FPPCGift" syncable="YES">
         <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>

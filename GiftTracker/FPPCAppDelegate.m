@@ -169,6 +169,7 @@
                 
                 /**
                  * We use the bundle identifier as the unique key to define what data is to be shared across devices. We replace the periods with tilde's per Apple's recommendation.
+                 * Discussion: https://devforums.apple.com/message/865121#865121
                  */
                 [options setValue:[[[NSBundle mainBundle] bundleIdentifier] stringByReplacingOccurrencesOfString:@"." withString:@"~"] forKey:NSPersistentStoreUbiquitousContentNameKey];
                 
@@ -192,11 +193,12 @@
         NSPersistentStore *store = nil;
         store = [coordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:options error:&error];
         
-        if (!store) {
-            TFLog(@"ERROR: Failed to create persistent store - %@", error);
-            [self showErrorMessage];
-        }
         dispatch_async(dispatch_get_main_queue(), ^{
+            if (!store) {
+                TFLog(@"ERROR: Failed to create persistent store - %@", error);
+                [self showErrorMessage];
+            }
+            
             [self contextInitialized];
         });
     });

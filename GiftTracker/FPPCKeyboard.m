@@ -9,6 +9,13 @@
 @property (nonatomic, strong) UIViewController<FPPCToolbarDelegate> *controller;
 @property (nonatomic, strong) FPPCSegmentedControl *segmentedControl;
 @property (nonatomic, strong) UIBarButtonItem *doneButton;
+
+enum FPPCSegmentedControlIndex {
+    NEXT_INDEX = 0,
+    PREVIOUS_INDEX
+};
+- (void)previous;
+- (void)next;
 @end
 
 @implementation FPPCToolbar
@@ -76,46 +83,48 @@
 }
 
 - (void)nextPrevious:(FPPCSegmentedControl *)sender {
-    
-    // Tapped "Previous"
-    if (sender.selectedSegmentIndex == 0) {
-        
-        // Allow for a second list of negative tags
-        NSInteger previousIndex;
-        if (self.textField.tag == -1) {
-            previousIndex = self.controller.maxIndex;
-        }
-        else if (self.textField.tag < 0) {
-            previousIndex = self.textField.tag + 1;
-        }
-        else {
-            previousIndex = self.textField.tag - 1;
-        }
+    if (sender.selectedSegmentIndex == PREVIOUS_INDEX)
+        [self next];
+    else if (sender.selectedSegmentIndex == NEXT_INDEX)
+        [self previous];
+}
 
-        // Change text fields
-        [self.textField resignFirstResponder];
-        [(UITextField *)[self.controller.view viewWithTag:previousIndex] becomeFirstResponder];
+- (void)previous {
+    
+    // Allow for a second list of negative tags
+    NSInteger previousIndex;
+    if (self.textField.tag == -1) {
+        previousIndex = self.controller.maxIndex;
+    }
+    else if (self.textField.tag < 0) {
+        previousIndex = self.textField.tag + 1;
+    }
+    else {
+        previousIndex = self.textField.tag - 1;
     }
     
-    // Tapped "Next"
-    else if (sender.selectedSegmentIndex == 1) {
-        
-        // Allow for a second list of negative tags
-        NSInteger nextIndex;
-        if (self.textField.tag == self.controller.maxIndex) {
-            nextIndex = -1;
-        }
-        else if (self.textField.tag < 0) {
-            nextIndex = self.textField.tag - 1;
-        }
-        else {
-            nextIndex = self.textField.tag + 1;
-        }
-        
-        // Change text fields
-        [self.textField resignFirstResponder];
-        [(UITextField *)[self.controller.view viewWithTag:nextIndex] becomeFirstResponder];
+    // Change text fields
+    [self.textField resignFirstResponder];
+    [(UITextField *)[self.controller.view viewWithTag:previousIndex] becomeFirstResponder];
+}
+
+- (void)next {
+    
+    // Allow for a second list of negative tags
+    NSInteger nextIndex;
+    if (self.textField.tag == self.controller.maxIndex) {
+        nextIndex = -1;
     }
+    else if (self.textField.tag < 0) {
+        nextIndex = self.textField.tag - 1;
+    }
+    else {
+        nextIndex = self.textField.tag + 1;
+    }
+    
+    // Change text fields
+    [self.textField resignFirstResponder];
+    [(UITextField *)[self.controller.view viewWithTag:nextIndex] becomeFirstResponder];
 }
 
 @end

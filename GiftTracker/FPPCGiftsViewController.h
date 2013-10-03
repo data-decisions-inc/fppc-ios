@@ -7,9 +7,9 @@
 //
 
 #import "FPPCGiftSearchViewController.h"
+#import "FPPCGiftFormViewController.h"
 
-@interface FPPCGiftsViewController : FPPCGiftSearchViewController
+@interface FPPCGiftsViewController : FPPCGiftSearchViewController <FPPCGiftFormViewControllerDelegate>
 - (IBAction)cancel:(id)sender;
-- (void)didEditGift;
 @property (nonatomic, strong) NSDate *date;
 @end

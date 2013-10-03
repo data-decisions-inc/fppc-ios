@@ -13,7 +13,6 @@
 #import "FPPCAppDelegate.h"
 #import "FPPCSourceCell.h"
 #import "FPPCActionSheet.h"
-#import "UIImage+ImageWithColor.h"
 #import "UIColor+FPPC.h"
 #import "FPPCSourceViewController.h"
 
@@ -41,15 +40,6 @@
     
     // Initialize scrolling
     originalCenter = self.view.center;
-}
-
-#pragma mark - Factories for singleton instances
-#pragma
-
-+ (FPPCSearchViewController *)searchViewController {
-    @throw [NSException exceptionWithName:NSInternalInconsistencyException
-                                   reason:[NSString stringWithFormat:@"You must override %@ in a subclass", NSStringFromSelector(_cmd)]
-                                 userInfo:nil];
 }
 
 #pragma mark - TableView
@@ -103,9 +93,7 @@
     }
 }
 
-- (void)reloadSummary {
-    
-}
+- (void)reloadSummary { }
 
 #pragma mark - Alert view
 #pragma
@@ -158,7 +146,6 @@
 #pragma
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
-    // The fetch controller is about to start sending change notifications, so prepare the table view for updates.
     [self.tableView beginUpdates];
 }
 
@@ -223,7 +210,6 @@
 
 - (void)filterContentForSearchText:(NSString*)searchText scope:(NSString*)scope
 {
-    // Return names that contain searchText
     @throw [NSException exceptionWithName:NSInternalInconsistencyException
                                    reason:[NSString stringWithFormat:@"You must override %@ in a subclass", NSStringFromSelector(_cmd)]
                                  userInfo:nil];
@@ -244,31 +230,24 @@
     return YES;
 }
 
-//- (void)searchDisplayControllerDidEndSearch:(UISearchDisplayController *)controller {
-//    if (self.scrollView)[self.scrollView setContentOffset:CGPointZero animated:YES];
-//}
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
     
-    // Move the search bar up to the correct location
+    // Move the search bar up
     [UIView animateWithDuration:.4
                      animations:^{
                          self.view.center = CGPointMake(originalCenter.x, originalCenter.y-searchBar.frame.origin.y);
                      }
-                     completion:^(BOOL finished){
-                         //whatever else you may need to do
-                     }];
+                     completion:nil];
 }
 
 - (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {
     
-    // Move the search bar down to the correct location eg
+    // Move the search bar down
     [UIView animateWithDuration:.4
                      animations:^{
                          self.view.center = CGPointMake(originalCenter.x, originalCenter.y);
                      }
-                     completion:^(BOOL finished){
-                         //whatever else you may need to do
-                     }];
+                     completion:nil];
 }
 
 #pragma mark - FetchedResults
@@ -278,6 +257,10 @@
     @throw [NSException exceptionWithName:NSInternalInconsistencyException
                                    reason:[NSString stringWithFormat:@"You must override %@ in a subclass", NSStringFromSelector(_cmd)]
                                  userInfo:nil];
+}
+
+- (void)dealloc {
+    _fetchedResultsController.delegate = nil;
 }
 
 @end

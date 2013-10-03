@@ -11,8 +11,9 @@
 #import "FPPCViewController.h"
 #import "FPPCSource.h"
 #import "FPPCGiftSearchViewController.h"
+#import "FPPCGiftFormViewController.h"
 
-@interface FPPCSourceViewController : FPPCGiftSearchViewController <MFMailComposeViewControllerDelegate, MFMessageComposeViewControllerDelegate, UISearchBarDelegate, UIAlertViewDelegate>
+@interface FPPCSourceViewController : FPPCGiftSearchViewController <MFMailComposeViewControllerDelegate, MFMessageComposeViewControllerDelegate, UISearchBarDelegate, UIAlertViewDelegate, FPPCGiftFormViewControllerDelegate>
 @property (strong, nonatomic) FPPCSource *source;
 @property (strong, nonatomic) IBOutlet UILabel *name;
 @property (strong, nonatomic) IBOutlet UILabel *totalReceived;

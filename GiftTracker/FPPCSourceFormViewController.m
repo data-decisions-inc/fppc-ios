@@ -14,13 +14,14 @@
 
 @interface FPPCSourceFormViewController ()
 #define NUMBER_OF_TEXT_FIELDS 9
+- (void)scrollView:(UIScrollView *)scrollView toFocusTextField:(UITextField *)textField;
 @end
 
 @implementation FPPCSourceFormViewController
 @synthesize source;
 @synthesize name, business, email, phone, lobbying, isLobbying, isLobbying_iOS6;
 @synthesize street, street2, city, state, zipcode;
-@synthesize scrollView;
+@synthesize scrollView = _scrollView;
 @synthesize keyboardToolbar;
 @synthesize delegate;
 @synthesize navigationBar;
@@ -110,51 +111,7 @@
     [(FPPCAppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
     
     // Pass this source back to the new-gift form
-    if ([delegate isMemberOfClass:[FPPCGiftFormViewController class]]) {
-        [(FPPCGiftFormViewController *)self.delegate didAddSource:source];
-
-    } else if ([delegate isMemberOfClass:[FPPCDashboardViewController class]]) {
-        [(FPPCDashboardViewController *)self.delegate didAddSource:source];
-        [TestFlight passCheckpoint:@"SOURCE - SAVE"];
-    }
-}
-
-#pragma mark - Field validation
-#pragma
-
-- (BOOL)isValidEmail:(NSString *)emailString
-{
-    BOOL stricterFilter = YES; // Discussion http://blog.logichigh.com/2010/09/02/validating-an-e-mail-address/
-    NSString *stricterFilterString = @"[A-Z0-9a-z\\._%+-]+@([A-Za-z0-9-]+\\.)+[A-Za-z]{2,4}";
-    NSString *laxString = @".+@([A-Za-z0-9]+\\.)+[A-Za-z]{2}[A-Za-z]*";
-    NSString *emailRegex = stricterFilter ? stricterFilterString : laxString;
-    NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegex];
-    return [emailTest evaluateWithObject:emailString];
-}
-
-- (BOOL)isValidZipcode:(NSString *)zipcodeString
-{
-    NSString *zipcodeExpression = @"^[0-9]{5}(-/d{4})?$"; //U.S Zip ONLY
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:zipcodeExpression options:0 error:NULL];
-    NSTextCheckingResult *match = [regex firstMatchInString:zipcodeString options:0 range:NSMakeRange(0, [zipcodeString length])];
-    if (match) return true;
-    return false;
-}
-
-- (BOOL)isValidPhone:(NSString *)phoneString
-{
-    NSString * const regularExpression = @"^([+-]{1})([0-9]{3})$";
-    NSError *error = NULL;
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:regularExpression
-                                                                           options:NSRegularExpressionCaseInsensitive
-                                                                             error:&error];
-    if (error) {
-        TFLog(@"ERROR: Failed to read phone number - %@", error);
-    }
-    NSUInteger numberOfMatches = [regex numberOfMatchesInString:phoneString
-                                                        options:0
-                                                          range:NSMakeRange(0, [phoneString length])];
-    return numberOfMatches > 0;
+    [self.delegate didAddSource:source];
 }
 
 #pragma mark - UITextField
@@ -170,9 +127,7 @@
     return YES;
 }
 
-- (void)textFieldDidBeginEditing:(UITextField *)textField {
-    
-    // Ensure the active textfield is visible
+- (void)scrollView:(UIScrollView *)scrollView toFocusTextField:(UITextField *)textField {
     UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, keyboardSize.height, 0.0);
     scrollView.contentInset = contentInsets;
     scrollView.scrollIndicatorInsets = contentInsets;
@@ -180,28 +135,14 @@
     CGRect aRect = self.view.frame;
     aRect.origin.y = navigationBar.frame.size.height;
     aRect.size.height -= (keyboardSize.height+self.keyboardToolbar.frame.size.height+navigationBar.frame.size.height*2);
-    [self.scrollView scrollRectToVisible:self.keyboardToolbar.textField.frame animated:YES];
+    [scrollView scrollRectToVisible:self.keyboardToolbar.textField.frame animated:YES];
+}
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField {
+    [self scrollView:self.scrollView toFocusTextField:textField];
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
-    
-    // Optional TODO: Validation warnings
-//    if ([textField isEqual:phone]) {
-//        if (![self isValidPhone:phone.text]) {
-//            // TODO validation warning
-//        }
-//    }
-//    else if ([textField isEqual:zipcode]) {
-//        if (![self isValidZipcode:zipcode.text]) {
-//            // TODO validation warning 
-//        }
-//    }
-//    else if ([textField isEqual:email]) {
-//        if (![self isValidEmail:email.text]) {
-//            // TODO validation warning
-//        }
-//    }
-    
     [textField resignFirstResponder];
 }
 
@@ -247,14 +188,7 @@
     NSDictionary* info = [aNotification userInfo];
     keyboardSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
     
-    UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, keyboardSize.height, 0.0);
-    scrollView.contentInset = contentInsets;
-    scrollView.scrollIndicatorInsets = contentInsets;
-
-    CGRect aRect = self.view.frame;
-    aRect.origin.y = navigationBar.frame.size.height;
-    aRect.size.height -= (keyboardSize.height+self.keyboardToolbar.frame.size.height+navigationBar.frame.size.height*2);
-    [self.scrollView scrollRectToVisible:self.keyboardToolbar.textField.frame animated:YES];
+    [self scrollView:self.scrollView toFocusTextField:self.keyboardToolbar.textField];
 }
 
 - (void)keyboardWillBeHidden:(NSNotification*)aNotification

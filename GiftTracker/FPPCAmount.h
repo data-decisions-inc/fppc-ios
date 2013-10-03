@@ -2,7 +2,7 @@
 //  FPPCAmount.h
 //  GiftTracker
 //
-//  Created by Jaime Ohm on 9/12/13.
+//  Created by Jaime Ohm on 10/2/13.
 //  Copyright (c) 2013 FPPC. All rights reserved.
 //
 
@@ -14,20 +14,7 @@
 @interface FPPCAmount : NSManagedObject
 
 @property (nonatomic, retain) NSNumber * value;
-@property (nonatomic, retain) NSSet *gift;
-@property (nonatomic, retain) NSSet *source;
-@end
-
-@interface FPPCAmount (CoreDataGeneratedAccessors)
-
-- (void)addGiftObject:(FPPCGift *)value;
-- (void)removeGiftObject:(FPPCGift *)value;
-- (void)addGift:(NSSet *)values;
-- (void)removeGift:(NSSet *)values;
-
-- (void)addSourceObject:(FPPCSource *)value;
-- (void)removeSourceObject:(FPPCSource *)value;
-- (void)addSource:(NSSet *)values;
-- (void)removeSource:(NSSet *)values;
+@property (nonatomic, retain) FPPCGift *gift;
+@property (nonatomic, retain) FPPCSource *source;
 
 @end

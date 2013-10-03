@@ -93,7 +93,7 @@
     NSFetchedResultsController *theFetchedResultsController =
     [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
                                         managedObjectContext:((FPPCAppDelegate *)[[UIApplication sharedApplication] delegate]).managedObjectContext sectionNameKeyPath:nil
-                                                   cacheName:@"Root"];
+                                                   cacheName:@"FPPCDashboard"];
     
     theFetchedResultsController.delegate = self;
     self.fetchedResultsController = theFetchedResultsController;
@@ -131,27 +131,27 @@
     // Update month and year values
     NSDateComponents *today = [[NSCalendar currentCalendar] components:NSMonthCalendarUnit|NSYearCalendarUnit fromDate:[self date]];
     NSMutableSet *yearGiftsSet = [[NSMutableSet alloc] init];
-    NSMutableSet *monthGiftsSet = [[NSMutableSet alloc] init];;
-    double yearGiftsSum = 0, monthGiftsSum = 0;
+    NSMutableSet *monthGiftsSet = [[NSMutableSet alloc] init];
+    NSDecimalNumber *yearGiftsSum = [NSDecimalNumber zero], *monthGiftsSum = [NSDecimalNumber zero];
+
     for (FPPCSource *source in [self.fetchedResultsController fetchedObjects]) {
         for (FPPCAmount *amount in source.amount) {
-            for (FPPCGift *gift in amount.gift) {
-                NSDateComponents *c = [[NSCalendar currentCalendar] components:NSYearCalendarUnit|NSMonthCalendarUnit fromDate:gift.date];
-                if (today.year == c.year) {
-                    [yearGiftsSet addObject:gift];
-                    yearGiftsSum += [amount.value doubleValue];
-                    if (today.month == c.month) {
-                        [monthGiftsSet addObject:gift];
-                        monthGiftsSum += [amount.value doubleValue];
-                    }
+            NSDateComponents *c = [[NSCalendar currentCalendar] components:NSYearCalendarUnit|NSMonthCalendarUnit fromDate:amount.gift.date];
+            if (today.year == c.year) {
+                [yearGiftsSet addObject:amount.gift];
+                yearGiftsSum = [yearGiftsSum decimalNumberByAdding:[NSDecimalNumber decimalNumberWithDecimal:[amount.value decimalValue]]];
+
+                if (today.month == c.month) {
+                    [monthGiftsSet addObject:amount.gift];
+                    monthGiftsSum = [monthGiftsSum decimalNumberByAdding:[NSDecimalNumber decimalNumberWithDecimal:[amount.value decimalValue]]];
                 }
             }
         }
     }
     self.monthGifts.text = [NSString stringWithFormat:@"%d gift%@",monthGiftsSet.count,(monthGiftsSet.count == 1)?@"":@"s"];
     self.yearGifts.text = [NSString stringWithFormat:@"%d gift%@",yearGiftsSet.count,(monthGiftsSet.count == 1)?@"":@"s"];
-    self.monthValue.text = [self.currencyFormatter stringFromNumber:[NSNumber numberWithDouble:monthGiftsSum]];
-    self.yearValue.text = [self.currencyFormatter stringFromNumber:[NSNumber numberWithDouble:yearGiftsSum]];
+    self.monthValue.text = [self.currencyFormatter stringFromNumber:monthGiftsSum];
+    self.yearValue.text = [self.currencyFormatter stringFromNumber:yearGiftsSum];
 }
 
 #pragma mark - Date and Year Pickers
@@ -289,7 +289,7 @@
                             break;
                         }
                         case DATE: {
-                            text = [dateFormatter stringFromDate:((FPPCGift *)[amount.gift anyObject]).date];
+                            text = [dateFormatter stringFromDate:amount.gift.date];
                             break;
                         }
                         case VALUE: {
@@ -298,7 +298,7 @@
                             break;
                         }
                         case DESCRIPTION: {
-                            NSString *name = ((FPPCGift *)[amount.gift anyObject]).name;
+                            NSString *name = amount.gift.name;
                             text = (name.length == 0) ?  @"" : name;
                             break;
                         }
@@ -318,12 +318,12 @@
         [workbook writeFile:appFile];
         
         // Was the spreadsheet succesfully created?
-        if ([[NSFileManager defaultManager] fileExistsAtPath:appFile]) {
+        NSError *error;
+        NSData *spreadsheet = [NSData dataWithContentsOfFile:appFile options:NSDataReadingUncached error:&error];
+        if (!error) {
                         
             // Email spreadsheet
-            NSData *spreadsheet = [[NSFileManager defaultManager] contentsAtPath:appFile];
             [emailViewController addAttachmentData:spreadsheet mimeType:@"application/excel" fileName:@"ScheduleD.xls"];
-            
             [TestFlight passCheckpoint:@"DASHBOARD - EXPORT - SPREADSHEET"];
         }
         else {
@@ -461,7 +461,7 @@
             gift.date = [NSDate date];
             FPPCAmount *amount = (FPPCAmount *)[NSEntityDescription insertNewObjectForEntityForName:@"FPPCAmount" inManagedObjectContext:((FPPCAppDelegate *)[[UIApplication sharedApplication] delegate]).managedObjectContext];
             amount.value = [NSNumber numberWithInt:0];
-            [amount addSourceObject:source];
+            amount.source = source;
             [gift addAmountObject:amount];
                         
             [(FPPCGiftFormViewController *)[segue destinationViewController] setGift:gift];
@@ -492,13 +492,13 @@
 #pragma 
 - (void)didAddSource:(FPPCSource *)source
 {
-    [self reloadTableView];
+    [self reloadSummary];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)didAddGift
+- (void)didUpdateGift
 {
-    [self reloadTableView];
+    [self reloadSummary];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 

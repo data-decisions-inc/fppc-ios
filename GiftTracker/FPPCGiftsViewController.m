@@ -16,7 +16,6 @@
 
 #pragma mark - Table view
 #pragma
-
 - (id)tableView:(UITableView *)tableView configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
     // We maintain two sets of data (one for search results and one pre-search)
@@ -32,15 +31,13 @@
     // Display name, sources, and total amount
     ((FPPCGiftCell *)cell).name.text = gift.name;
     NSMutableSet *sources = [[NSMutableSet alloc] init];
-    double total = 0;
+    NSDecimalNumber *total = [NSDecimalNumber zero];
     for (FPPCAmount *amount in gift.amount) {
-        total += [amount.value doubleValue];
-        for (FPPCSource *source in amount.source) {
-            [sources addObject:source];
-        }
+        total = [total decimalNumberByAdding:[NSDecimalNumber decimalNumberWithDecimal:[amount.value decimalValue]]];
+        [sources addObject:amount.source];
     }
     ((FPPCGiftCell *)cell).sources.text = (sources.count == 0) ? @"": [NSString stringWithFormat:@"From: %@",[[[sources valueForKey:@"name"] allObjects] componentsJoinedByString:@", "]];
-    ((FPPCGiftCell *)cell).totalValue.text = [self.currencyFormatter stringFromNumber:[NSNumber numberWithDouble:total]];
+    ((FPPCGiftCell *)cell).totalValue.text = [self.currencyFormatter stringFromNumber:total];
     
     // Display date
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
@@ -58,14 +55,13 @@
 
 #pragma mark - Delegate
 #pragma
-- (void)didEditGift {
+- (void)didUpdateGift {
     [self reloadTableView];
     [self dismissViewControllerAnimated:YES completion:nil];
 };
 
 #pragma mark - FetchedResults
 #pragma
-
 - (NSFetchedResultsController *)fetchedResultsController {
     if (_fetchedResultsController != nil) {
         return _fetchedResultsController;
@@ -109,7 +105,7 @@
     NSFetchedResultsController *theFetchedResultsController =
     [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
                                         managedObjectContext:((FPPCAppDelegate *)[[UIApplication sharedApplication] delegate]).managedObjectContext sectionNameKeyPath:nil
-                                                   cacheName:@"Root"];
+                                                   cacheName:@"FPPCGiftsView"];
     
     theFetchedResultsController.delegate = self;
     self.fetchedResultsController = theFetchedResultsController;

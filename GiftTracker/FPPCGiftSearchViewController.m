@@ -16,8 +16,6 @@
 @interface FPPCGiftSearchViewController ()
 @end
 
-static FPPCGiftSearchViewController *SearchViewController;
-
 @implementation FPPCGiftSearchViewController
 @synthesize giftCell;
 @synthesize navBar;
@@ -25,16 +23,6 @@ static FPPCGiftSearchViewController *SearchViewController;
 - (void)viewDidLoad {
     [super viewDidLoad];
     [TestFlight passCheckpoint:@"DASHBOARD - GIFTS"];
-}
-
-#pragma mark - Factories for singleton instances
-#pragma
-
-+ (FPPCGiftSearchViewController *)searchViewController {
-    if (!SearchViewController) {
-        SearchViewController = [[FPPCGiftSearchViewController alloc] init];
-    }
-    return SearchViewController;
 }
 
 #pragma mark - TableView

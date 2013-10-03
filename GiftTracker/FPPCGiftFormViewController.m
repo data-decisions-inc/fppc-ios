@@ -16,6 +16,7 @@
 @interface FPPCGiftFormViewController ()
 - (void)updateTotal;
 - (void)updateTextFieldAmount:(UITextField *)textField;
+- (void)scrollView:(UIScrollView *)scrollView toFocusTextField:(UITextField *)textField;
 #define NUMBER_OF_TEXT_FIELDS 4
 @end
 
@@ -34,37 +35,25 @@
 #pragma mark - View lifecycle
 #pragma
 
-- (void)viewWillAppear:(BOOL)animated {
-    // Set constraints for date columns, so that they're of even width
-    NSLayoutConstraint *con= [NSLayoutConstraint constraintWithItem:self.day attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.month attribute:NSLayoutAttributeWidth multiplier:1.0 constant:0];
-    [self.view addConstraints:[NSArray arrayWithObjects:con,nil]];
-}
-
-- (void)loadView {
-    [super loadView];
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     
     // Create input accessory view for keyboard
     self.keyboardToolbar = [[FPPCToolbar alloc] initWithDelegate:self];
+    [self registerForKeyboardNotifications];
     
-    // Display gift name
+    // Display summary
     self.name.text = self.gift.name;
-    
-    // Display gift date
     NSDateComponents *date = [[NSCalendar currentCalendar] components:NSMonthCalendarUnit|NSDayCalendarUnit|NSYearCalendarUnit fromDate:self.gift.date ? self.gift.date : [NSDate date]];
     self.day.text = [NSString stringWithFormat:@"%02d", date.day];
     self.month.text = [NSString stringWithFormat:@"%02d", date.month];
     self.year.text = [NSString stringWithFormat:@"%d", date.year];
     
-    // Display gift total
-    double total = 0;
+    NSDecimalNumber *total = [NSDecimalNumber zero];
     for (FPPCAmount *amount in gift.amount) {
-        total += [amount.value doubleValue];
+        total = [total decimalNumberByAdding:[NSDecimalNumber decimalNumberWithDecimal:[amount.value decimalValue]]];
     }
-    self.total.text = [self.currencyFormatter stringFromNumber:[NSNumber numberWithDouble:total]];
+    self.total.text = [self.currencyFormatter stringFromNumber:total];
     
     // Initialize pickers
     if (self.months.count == 0) {
@@ -110,11 +99,15 @@
 }
 
 - (void)updateTotal {
-    double total = 0;
+    NSDecimalNumber *total = [NSDecimalNumber zero];
     for (FPPCAmount *amount in [self.fetchedResultsController fetchedObjects]) {
-        total += [amount.value doubleValue];
+        total = [total decimalNumberByAdding:[NSDecimalNumber decimalNumberWithDecimal:[amount.value decimalValue]]];
     }
-    self.total.text = [self.currencyFormatter stringFromNumber:[NSNumber numberWithDouble:total]];
+    self.total.text = [self.currencyFormatter stringFromNumber:total];
+}
+
+- (void)dealloc {
+    _fetchedResultsController.delegate = nil;
 }
 
 #pragma mark - UITextField
@@ -122,6 +115,16 @@
 
 - (NSInteger)maxIndex {
     return NUMBER_OF_TEXT_FIELDS;
+}
+
+- (void)scrollView:(UIScrollView *)scrollView toFocusTextField:(UITextField *)textField {
+    UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, keyboardSize.height-self.keyboardToolbar.frame.size.height, 0.0);
+    scrollView.contentInset = contentInsets;
+    scrollView.scrollIndicatorInsets = contentInsets;
+    
+    CGRect aRect = scrollView.frame;
+    aRect.size.height -= (keyboardSize.height+self.keyboardToolbar.frame.size.height);
+    [scrollView scrollRectToVisible:self.keyboardToolbar.textField.frame animated:YES];
 }
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
@@ -142,7 +145,13 @@
         [self.dayPickerView selectRow:today.day-1 inComponent:0 animated:YES];
     }
     
+    [self scrollView:self.tableView toFocusTextField:textField];
+    
     return YES;
+}
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField {
+    [self scrollView:self.tableView toFocusTextField:textField];
 }
 
 - (void)updateTextFieldAmount:(UITextField *)textField {
@@ -250,7 +259,7 @@
     // Add source to gift
     FPPCAmount *amount = (FPPCAmount *)[NSEntityDescription insertNewObjectForEntityForName:@"FPPCAmount" inManagedObjectContext:((FPPCAppDelegate *)[[UIApplication sharedApplication] delegate]).managedObjectContext];
     amount.value = [NSNumber numberWithInt:0];
-    [amount addSourceObject:source];
+    amount.source = source;
     [self.gift addAmountObject:amount];
     
     // Update view
@@ -296,13 +305,7 @@
     [(FPPCAppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
     
     // Pass this source back to the dashboard
-    if ([self.delegate isMemberOfClass:[FPPCDashboardViewController class]]) {
-        [(FPPCDashboardViewController *)self.delegate didAddGift];
-    } else if ([self.delegate isMemberOfClass:[FPPCGiftsViewController class]]){
-        [(FPPCGiftsViewController *)self.delegate didEditGift];
-    } else {
-        [self dismissViewControllerAnimated:YES completion:nil];
-    }
+    [self.delegate didUpdateGift];
     
     _fetchedResultsController.delegate = nil;
     _fetchedResultsController = nil;
@@ -342,7 +345,7 @@
     FPPCAmount *amount = [self.fetchedResultsController objectAtIndexPath:indexPath];
     
     // Display source name and amount
-    ((FPPCGiftFormCell *)cell).name.text = ((FPPCSource *)[[amount.source allObjects] objectAtIndex:0]).name;
+    ((FPPCGiftFormCell *)cell).name.text = amount.source.name;
     ((FPPCGiftFormCell *)cell).amount.text = [self.currencyFormatter stringFromNumber:amount.value];
     ((FPPCGiftFormCell *)cell).amount.tag = ((-1)*indexPath.row)-1;
     return cell;
@@ -405,7 +408,7 @@
     [fetchRequest setFetchBatchSize:20];
     
     // Only fetch amounts related to this gift
-    NSPredicate *giftPredicate = [NSPredicate predicateWithFormat:@"ANY gift == %@", self.gift];
+    NSPredicate *giftPredicate = [NSPredicate predicateWithFormat:@"gift == %@", self.gift];
     [fetchRequest setPredicate:giftPredicate];
     
     // Edit the sort key as appropriate.
@@ -418,7 +421,7 @@
     NSFetchedResultsController *theFetchedResultsController =
     [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
                                         managedObjectContext:((FPPCAppDelegate *)[[UIApplication sharedApplication] delegate]).managedObjectContext sectionNameKeyPath:nil
-                                                   cacheName:@"Root"];
+                                                   cacheName:@"FPPCGiftForm"];
     
     theFetchedResultsController.delegate = self;
     self.fetchedResultsController = theFetchedResultsController;
@@ -433,7 +436,6 @@
 }
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
-    // The fetch controller is about to start sending change notifications, so prepare the table view for updates.
     [self.tableView beginUpdates];
 }
 
@@ -487,8 +489,31 @@
     }
 }
 
-- (void)dealloc {
-    _fetchedResultsController.delegate = nil;
+
+#pragma mark - Keyboard notifications
+#pragma
+
+- (void)registerForKeyboardNotifications
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWasShown:)
+                                                 name:UIKeyboardDidShowNotification object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillBeHidden:)
+                                                 name:UIKeyboardWillHideNotification object:nil];
+    
+}
+
+- (void)keyboardWasShown:(NSNotification*)aNotification
+{
+    NSDictionary* info = [aNotification userInfo];
+    keyboardSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+    [self scrollView:self.tableView toFocusTextField:self.keyboardToolbar.textField];
+}
+
+- (void)keyboardWillBeHidden:(NSNotification*)aNotification
+{
 }
 
 @end

@@ -94,15 +94,15 @@
 }
 
 - (void)reloadSummary {
-    double total = 0;
+    NSDecimalNumber *total = [NSDecimalNumber zero];
     for (FPPCGift *gift in [self.fetchedResultsController fetchedObjects]) {
         for (FPPCAmount *amount in gift.amount) {
-            if ([[amount.source anyObject] isEqual:self.source]) {
-                total += [amount.value doubleValue];
+            if ([amount.source isEqual:self.source]) {
+                total = [total decimalNumberByAdding:[NSDecimalNumber decimalNumberWithDecimal:[amount.value decimalValue]]];
             }
         }
     }
-    self.totalReceived.text = [self.currencyFormatter stringFromNumber:[NSNumber numberWithDouble:total]];
+    self.totalReceived.text = [self.currencyFormatter stringFromNumber:total];
 }
 
 - (void)reloadTableView {
@@ -129,15 +129,14 @@
     ((FPPCGiftCell *)cell).name.text = gift.name;
     NSMutableSet *sources = [[NSMutableSet alloc] init];
     
-    double total = 0;
+    NSDecimalNumber *total = [NSDecimalNumber zero];
     for (FPPCAmount *amount in gift.amount) {
-        for (FPPCSource *source in amount.source) {
-            [sources addObject:source];
-            if ([source isEqual:self.source]) total = [amount.value doubleValue];
-        }
+        [sources addObject:amount.source];
+        if ([amount.source isEqual:self.source])
+            total = [NSDecimalNumber decimalNumberWithDecimal:[amount.value decimalValue]];
     }
     ((FPPCGiftCell *)cell).sources.text = (sources.count == 0) ? @"": [NSString stringWithFormat:@"From: %@",[[[sources valueForKey:@"name"] allObjects] componentsJoinedByString:@", "]];
-    ((FPPCGiftCell *)cell).totalValue.text = [self.currencyFormatter stringFromNumber:[NSNumber numberWithDouble:total]];
+    ((FPPCGiftCell *)cell).totalValue.text = [self.currencyFormatter stringFromNumber:total];
     
     // Display date
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
@@ -261,7 +260,7 @@
     [fetchRequest setFetchBatchSize:20];
     
     // Only fetch gifts related to this source
-    NSPredicate *giftPredicate = [NSPredicate predicateWithFormat:@"SUBQUERY(amount, $b, ANY $b.source == %@).@count > 0", self.source];
+    NSPredicate *giftPredicate = [NSPredicate predicateWithFormat:@"ANY amount.source == %@", self.source];
     [fetchRequest setPredicate:giftPredicate];
     
     // Edit the sort key as appropriate.
@@ -274,7 +273,7 @@
     NSFetchedResultsController *theFetchedResultsController =
     [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
                                         managedObjectContext:((FPPCAppDelegate *)[[UIApplication sharedApplication] delegate]).managedObjectContext sectionNameKeyPath:nil
-                                                   cacheName:@"Root"];
+                                                   cacheName:@"FPPCSourceView"];
     
     theFetchedResultsController.delegate = self;
     self.fetchedResultsController = theFetchedResultsController;
@@ -286,6 +285,15 @@
 	}
     
     return _fetchedResultsController;
+}
+
+#pragma mark - Form delegate
+#pragma
+
+- (void)didUpdateGift
+{
+    [self reloadSummary];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

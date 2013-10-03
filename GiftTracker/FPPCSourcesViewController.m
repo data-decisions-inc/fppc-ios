@@ -41,9 +41,7 @@
     // No duplicate sources
     NSMutableArray *sources = [[NSMutableArray alloc] init];
     for (FPPCAmount *amount in self.gift.amount) {
-        for (FPPCSource *source in amount.source) {
-            [sources addObject:source];
-        }
+        [sources addObject:amount.source];
     }
     NSPredicate *dupePredicate = [NSPredicate predicateWithFormat:@"NOT (SELF IN %@)", sources];
     [fetchRequest setPredicate:dupePredicate];
@@ -58,7 +56,7 @@
     NSFetchedResultsController *theFetchedResultsController =
     [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
                                         managedObjectContext:((FPPCAppDelegate *)[[UIApplication sharedApplication] delegate]).managedObjectContext sectionNameKeyPath:nil
-                                                   cacheName:@"Root"];
+                                                   cacheName:@"FPPCSourcesView"];
     
     theFetchedResultsController.delegate = self;
     self.fetchedResultsController = theFetchedResultsController;
