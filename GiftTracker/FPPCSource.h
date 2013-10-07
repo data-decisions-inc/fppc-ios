@@ -2,7 +2,7 @@
 //  FPPCSource.h
 //  GiftTracker
 //
-//  Created by Jaime Ohm on 10/2/13.
+//  Created by Jaime Ohm on 10/7/13.
 //  Copyright (c) 2013 FPPC. All rights reserved.
 //
 
@@ -23,7 +23,11 @@
 @property (nonatomic, retain) NSString * street;
 @property (nonatomic, retain) NSString * street2;
 @property (nonatomic, retain) NSString * zipcode;
+@property (nonatomic, retain) NSDecimalNumber * total;
+@property (nonatomic, retain) NSDecimalNumber * limit;
 @property (nonatomic, retain) NSSet *amount;
++ (NSDate *)date;
++ (void)setDate:(NSDate *)date;
 @end
 
 @interface FPPCSource (CoreDataGeneratedAccessors)

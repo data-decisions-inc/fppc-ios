@@ -17,7 +17,9 @@
 #import "FPPCActionSheet.h"
 
 @interface FPPCDashboardViewController ()
-#define NUMBER_OF_TEXT_FIELDS 2
+#define FPPC_DASHBOARD_MINIMUM_TAG 1
+#define FPPC_DASHBOARD_MAXIMUM_TAG 2
+- (void)didCloseForm;
 @end
 
 @implementation FPPCDashboardViewController
@@ -39,7 +41,7 @@
     self.delegate = self;
     
     // Create input accessory view for keyboard
-    self.keyboardToolbar = [[FPPCToolbar alloc] initWithDelegate:self];
+    self.keyboardToolbar = [[FPPCToolbar alloc] initWithController:self];
     
     // Initialize month and year picker
     self.months = [NSArray arrayWithObjects:@"January",@"February",@"March",@"April",@"May",@"June",@"July",@"August",@"September",@"October",@"November",@"December", nil];
@@ -56,6 +58,7 @@
     NSDateComponents *today = [[NSCalendar currentCalendar] components:NSMonthCalendarUnit|NSYearCalendarUnit fromDate:[NSDate date]];
     self.year.text = [NSString stringWithFormat:@"%d",today.year];
     self.month.text = [self.months objectAtIndex:today.month-1];
+    [FPPCSource setDate:[NSDate date]];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -84,9 +87,12 @@
     [fetchRequest setFetchBatchSize:20];
     
     // Edit the sort key as appropriate.
-    NSSortDescriptor *sort = [[NSSortDescriptor alloc]
-                              initWithKey:@"name" ascending:YES];
-    [fetchRequest setSortDescriptors:[NSArray arrayWithObject:sort]];
+    NSSortDescriptor *sortByTotal = [[NSSortDescriptor alloc]
+                              initWithKey:@"limit" ascending:YES];
+    NSSortDescriptor *sortByName = [[NSSortDescriptor alloc]
+                                    initWithKey:@"name" ascending:YES];
+    
+    [fetchRequest setSortDescriptors:[NSArray arrayWithObjects:sortByTotal,sortByName, nil]];
     
     // Edit the section name key path and cache name if appropriate.
     // nil for section name key path means "no sections".
@@ -139,11 +145,11 @@
             NSDateComponents *c = [[NSCalendar currentCalendar] components:NSYearCalendarUnit|NSMonthCalendarUnit fromDate:amount.gift.date];
             if (today.year == c.year) {
                 [yearGiftsSet addObject:amount.gift];
-                yearGiftsSum = [yearGiftsSum decimalNumberByAdding:[NSDecimalNumber decimalNumberWithDecimal:[amount.value decimalValue]]];
+                yearGiftsSum = [yearGiftsSum decimalNumberByAdding:amount.value];
 
                 if (today.month == c.month) {
                     [monthGiftsSet addObject:amount.gift];
-                    monthGiftsSum = [monthGiftsSum decimalNumberByAdding:[NSDecimalNumber decimalNumberWithDecimal:[amount.value decimalValue]]];
+                    monthGiftsSum = [monthGiftsSum decimalNumberByAdding:amount.value];
                 }
             }
         }
@@ -191,10 +197,18 @@
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
     if ([pickerView isEqual:self.monthPickerView]) {
         self.month.text = [self pickerView:self.monthPickerView titleForRow:row forComponent:component];
+        [FPPCSource setDate:[self date]];
+        for (FPPCSource *source in [[self fetchedResultsController] fetchedObjects]) {
+            source.total = nil;
+        }
         [self reloadTableView];
         [self.month resignFirstResponder];
     } else {
         self.year.text = [self pickerView:self.yearPickerView titleForRow:row forComponent:component];
+        [FPPCSource setDate:[self date]];
+        for (FPPCSource *source in [[self fetchedResultsController] fetchedObjects]) {
+            source.total = nil;
+        }
         [self reloadTableView];
         [self.year resignFirstResponder];
     }
@@ -358,11 +372,7 @@
 }
 
 #pragma mark - UITextField
-#pragma 
-
-- (NSInteger)maxIndex {
-    return NUMBER_OF_TEXT_FIELDS;
-}
+#pragma
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
     
@@ -436,8 +446,9 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
+    self.searchBarShouldRemainActive = [self.searchDisplayController isActive];
+    
     if ([[segue identifier] isEqualToString:@"presentGifts"]) {
-        [(FPPCGiftsViewController *)[segue destinationViewController] setDate:[self date]];
     }
     else if ([[segue identifier] isEqualToString:@"editSource"] || [[segue identifier] isEqualToString:@"addGift"] || [[segue identifier] isEqualToString:@"viewSource"]) {
         FPPCSource *source;
@@ -460,7 +471,7 @@
             FPPCGift *gift = (FPPCGift *)[NSEntityDescription insertNewObjectForEntityForName:@"FPPCGift" inManagedObjectContext:((FPPCAppDelegate *)[[UIApplication sharedApplication] delegate]).managedObjectContext];
             gift.date = [NSDate date];
             FPPCAmount *amount = (FPPCAmount *)[NSEntityDescription insertNewObjectForEntityForName:@"FPPCAmount" inManagedObjectContext:((FPPCAppDelegate *)[[UIApplication sharedApplication] delegate]).managedObjectContext];
-            amount.value = [NSNumber numberWithInt:0];
+            amount.value = [NSDecimalNumber zero];
             amount.source = source;
             [gift addAmountObject:amount];
                         
@@ -473,6 +484,8 @@
             [(FPPCSourceFormViewController *)[segue destinationViewController] setSource:source];
         }
         else if ([[segue identifier] isEqualToString:@"viewSource"]) {
+            NSUndoManager *undoManager = [((FPPCAppDelegate *)[[UIApplication sharedApplication] delegate]).managedObjectContext undoManager];
+            [undoManager beginUndoGrouping];
             [TestFlight passCheckpoint:@"DASHBOARD - SOURCE - VIEW"];
             [(FPPCSourceViewController *)[segue destinationViewController] setSource:source];
         }
@@ -490,21 +503,65 @@
 
 #pragma mark - Form delegate
 #pragma 
-- (void)didAddSource:(FPPCSource *)source
-{
-    [self reloadSummary];
+
+- (void)didCloseForm {
+    self.searchBarShouldRemainActive = NO;
     [self dismissViewControllerAnimated:YES completion:nil];
+    
+    if ([self.searchDisplayController isActive]) {
+        // Move the search bar up
+        [UIView animateWithDuration:0
+                         animations:^{
+                             self.view.center = CGPointMake(originalCenter.x, originalCenter.y-self.searchBar.frame.origin.y);
+                         }
+                         completion:nil];
+    }
 }
 
-- (void)didUpdateGift
+- (void)didAddSource:(FPPCSource *)source
 {
-    [self reloadSummary];
-    [self dismissViewControllerAnimated:YES completion:nil];
+    if (source) [self reloadSummary];
+    [self didCloseForm];
+}
+
+- (void)didUpdateGift:(FPPCGift *)gift
+{
+    if (gift) [self reloadSummary];
+    [self didCloseForm];
+}
+
+- (void)didUpdateSource:(FPPCSource *)source
+{
+    if (source) [self reloadSummary];
+    [self didCloseForm];
 }
 
 #pragma mark - Search
 #pragma
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
+}
+
+#pragma mark - Keyboard delegate
+#pragma
+
+- (BOOL)hasPrevious:(UIView *)view {
+    if (view.tag == FPPC_DASHBOARD_MINIMUM_TAG) return NO;
+    return YES;
+}
+
+- (BOOL)hasNext:(UIView *)view {
+    if (view.tag == FPPC_DASHBOARD_MAXIMUM_TAG) return NO;
+    return YES;
+}
+
+- (void)previous:(UIView *)view {
+    [view resignFirstResponder];
+    [[self.view viewWithTag:view.tag - 1] becomeFirstResponder];
+}
+
+- (void)next:(UIView *)view {
+    [view resignFirstResponder];
+    [[self.view viewWithTag:view.tag + 1] becomeFirstResponder];
 }
 
 @end

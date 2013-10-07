@@ -16,10 +16,10 @@
 #import "FPPCSourceFormViewController.h"
 
 @protocol FPPCGiftFormViewControllerDelegate
-- (void)didUpdateGift;
+- (void)didUpdateGift:(FPPCGift *)gift;
 @end
 
-@interface FPPCGiftFormViewController : FPPCViewController <UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, FPPCToolbarDelegate, UITableViewDataSource, UITableViewDelegate, NSFetchedResultsControllerDelegate, UIActionSheetDelegate, FPPCSourceSearchViewControllerDelegate> {
+@interface FPPCGiftFormViewController : FPPCViewController <UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, FPPCToolbarDelegate, UITableViewDataSource, UITableViewDelegate, UIActionSheetDelegate, FPPCSourceSearchViewControllerDelegate, NSFetchedResultsControllerDelegate> {
     CGSize keyboardSize;
 }
 

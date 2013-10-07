@@ -11,5 +11,4 @@
 
 @interface FPPCGiftsViewController : FPPCGiftSearchViewController <FPPCGiftFormViewControllerDelegate>
 - (IBAction)cancel:(id)sender;
-@property (nonatomic, strong) NSDate *date;
 @end

@@ -13,7 +13,8 @@
 #import "UIColor+FPPC.h"
 
 @interface FPPCSourceFormViewController ()
-#define NUMBER_OF_TEXT_FIELDS 9
+#define FPPC_SOURCE_MINIMUM_TAG 1
+#define FPPC_SOURCE_MAXIMUM_TAG 9
 - (void)scrollView:(UIScrollView *)scrollView toFocusTextField:(UITextField *)textField;
 @end
 
@@ -37,7 +38,7 @@
     self.navigationBar.topItem.title = source ? @"Edit Source" : @"New Source";
     
     // Create input accessory view for keyboard
-    self.keyboardToolbar = [[FPPCToolbar alloc] initWithDelegate:self];
+    self.keyboardToolbar = [[FPPCToolbar alloc] initWithController:self];
     [self registerForKeyboardNotifications];
     
     // Custom switch
@@ -81,7 +82,7 @@
 #pragma
 
 - (void)cancel:(id)sender {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self.delegate didAddSource:nil];
 }
 
 - (void)save:(id)sender {
@@ -116,10 +117,6 @@
 
 #pragma mark - UITextField
 #pragma mark
-
-- (NSInteger)maxIndex {
-    return NUMBER_OF_TEXT_FIELDS;
-}
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
     textField.inputAccessoryView = self.keyboardToolbar;
@@ -193,6 +190,29 @@
 
 - (void)keyboardWillBeHidden:(NSNotification*)aNotification
 {
+}
+
+#pragma mark - Keyboard delegate
+#pragma
+
+- (BOOL)hasPrevious:(UIView *)view {
+    if (view.tag == FPPC_SOURCE_MINIMUM_TAG) return NO;
+    return YES;
+}
+
+- (BOOL)hasNext:(UIView *)view {
+    if (view.tag == FPPC_SOURCE_MAXIMUM_TAG) return NO;
+    return YES;
+}
+
+- (void)previous:(UIView *)view {
+    [view resignFirstResponder];
+    [[self.view viewWithTag:view.tag - 1] becomeFirstResponder];
+}
+
+- (void)next:(UIView *)view {
+    [view resignFirstResponder];
+    [[self.view viewWithTag:view.tag + 1] becomeFirstResponder];
 }
 
 @end

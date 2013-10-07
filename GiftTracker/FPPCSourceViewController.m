@@ -98,7 +98,7 @@
     for (FPPCGift *gift in [self.fetchedResultsController fetchedObjects]) {
         for (FPPCAmount *amount in gift.amount) {
             if ([amount.source isEqual:self.source]) {
-                total = [total decimalNumberByAdding:[NSDecimalNumber decimalNumberWithDecimal:[amount.value decimalValue]]];
+                total = [total decimalNumberByAdding:amount.value];
             }
         }
     }
@@ -133,7 +133,7 @@
     for (FPPCAmount *amount in gift.amount) {
         [sources addObject:amount.source];
         if ([amount.source isEqual:self.source])
-            total = [NSDecimalNumber decimalNumberWithDecimal:[amount.value decimalValue]];
+            total = amount.value;
     }
     ((FPPCGiftCell *)cell).sources.text = (sources.count == 0) ? @"": [NSString stringWithFormat:@"From: %@",[[[sources valueForKey:@"name"] allObjects] componentsJoinedByString:@", "]];
     ((FPPCGiftCell *)cell).totalValue.text = [self.currencyFormatter stringFromNumber:total];
@@ -290,10 +290,27 @@
 #pragma mark - Form delegate
 #pragma
 
-- (void)didUpdateGift
+- (void)didUpdateGift:(FPPCGift *)gift
 {
-    [self reloadSummary];
+    [self reloadTableView];
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark - Navigation bar
+#pragma 
+
+- (IBAction)cancel:(id)sender {
+    NSUndoManager *undoManager = [((FPPCAppDelegate *)[[UIApplication sharedApplication] delegate]).managedObjectContext undoManager];
+    [undoManager endUndoGrouping];
+    if ([undoManager canUndo])
+        [undoManager undo];
+    [self.delegate didUpdateSource:nil];
+}
+
+- (IBAction)save:(id)sender {
+    NSUndoManager *undoManager = [((FPPCAppDelegate *)[[UIApplication sharedApplication] delegate]).managedObjectContext undoManager];
+    [undoManager endUndoGrouping];
+    [self.delegate didUpdateSource:self.source];
 }
 
 @end

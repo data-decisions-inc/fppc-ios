@@ -17,8 +17,6 @@
 
 @interface FPPCSourceSearchViewController : FPPCSearchViewController
 @property (assign, nonatomic) IBOutlet FPPCSourceCell *sourceCell;
-- (NSDecimalNumber *)giftLimitWithSource:(FPPCSource *)source forDate:(NSDate *)date;
-
 @property (nonatomic, strong) NSDate *date;
 @property (nonatomic, strong) NSDateComponents *dateComponents;
 

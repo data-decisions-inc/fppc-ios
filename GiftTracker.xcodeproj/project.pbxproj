@@ -13,8 +13,9 @@
 		D2280E7E17F26E9200FEE521 /* MainStoryboard_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D2280E7A17F26E9200FEE521 /* MainStoryboard_iPad.storyboard */; };
 		D2280E7F17F26E9200FEE521 /* MainStoryboard_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D2280E7C17F26E9200FEE521 /* MainStoryboard_iPhone.storyboard */; };
 		D240C20717FD30C800E2647F /* FPPCGift.m in Sources */ = {isa = PBXBuildFile; fileRef = D240C20617FD30C800E2647F /* FPPCGift.m */; };
-		D240C20A17FD30C900E2647F /* FPPCSource.m in Sources */ = {isa = PBXBuildFile; fileRef = D240C20917FD30C900E2647F /* FPPCSource.m */; };
 		D240C20D17FD30C900E2647F /* FPPCAmount.m in Sources */ = {isa = PBXBuildFile; fileRef = D240C20C17FD30C900E2647F /* FPPCAmount.m */; };
+		D24DA76518029DAC00F6AC65 /* FPPCSource.m in Sources */ = {isa = PBXBuildFile; fileRef = D24DA76418029DAC00F6AC65 /* FPPCSource.m */; };
+		D24DA76E1803800800F6AC65 /* FPPCTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = D24DA76D1803800800F6AC65 /* FPPCTextField.m */; };
 		D24E46E117D6B11000AC886B /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D24E46E017D6B11000AC886B /* UIKit.framework */; };
 		D24E46E317D6B11000AC886B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D24E46E217D6B11000AC886B /* Foundation.framework */; };
 		D24E46E517D6B11000AC886B /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D24E46E417D6B11000AC886B /* CoreGraphics.framework */; };
@@ -81,10 +82,12 @@
 		D2280E7D17F26E9200FEE521 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPhone.storyboard; sourceTree = "<group>"; };
 		D240C20517FD30C800E2647F /* FPPCGift.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FPPCGift.h; sourceTree = "<group>"; };
 		D240C20617FD30C800E2647F /* FPPCGift.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FPPCGift.m; sourceTree = "<group>"; };
-		D240C20817FD30C900E2647F /* FPPCSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FPPCSource.h; sourceTree = "<group>"; };
-		D240C20917FD30C900E2647F /* FPPCSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FPPCSource.m; sourceTree = "<group>"; };
 		D240C20B17FD30C900E2647F /* FPPCAmount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FPPCAmount.h; sourceTree = "<group>"; };
 		D240C20C17FD30C900E2647F /* FPPCAmount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FPPCAmount.m; sourceTree = "<group>"; };
+		D24DA76318029DAC00F6AC65 /* FPPCSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FPPCSource.h; sourceTree = "<group>"; };
+		D24DA76418029DAC00F6AC65 /* FPPCSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FPPCSource.m; sourceTree = "<group>"; };
+		D24DA76C1803800800F6AC65 /* FPPCTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FPPCTextField.h; sourceTree = "<group>"; };
+		D24DA76D1803800800F6AC65 /* FPPCTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FPPCTextField.m; sourceTree = "<group>"; };
 		D24E46DD17D6B11000AC886B /* GiftTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GiftTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D24E46E017D6B11000AC886B /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		D24E46E217D6B11000AC886B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -264,6 +267,8 @@
 				D2CD55A917DF6A20003BBE30 /* FPPCActionSheet.m */,
 				D2CAAEAF17E2C21200EF2FF5 /* UIColor+FPPC.h */,
 				D2CAAEB017E2C21300EF2FF5 /* UIColor+FPPC.m */,
+				D24DA76C1803800800F6AC65 /* FPPCTextField.h */,
+				D24DA76D1803800800F6AC65 /* FPPCTextField.m */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -357,10 +362,10 @@
 			isa = PBXGroup;
 			children = (
 				D2C22B6F17EA681B009C8556 /* FPPCModel.xcdatamodeld */,
+				D24DA76318029DAC00F6AC65 /* FPPCSource.h */,
+				D24DA76418029DAC00F6AC65 /* FPPCSource.m */,
 				D240C20B17FD30C900E2647F /* FPPCAmount.h */,
 				D240C20C17FD30C900E2647F /* FPPCAmount.m */,
-				D240C20817FD30C900E2647F /* FPPCSource.h */,
-				D240C20917FD30C900E2647F /* FPPCSource.m */,
 				D240C20517FD30C800E2647F /* FPPCGift.h */,
 				D240C20617FD30C800E2647F /* FPPCGift.m */,
 			);
@@ -477,11 +482,12 @@
 				D24E471917D7EF8500AC886B /* FPPCSourceSearchViewController.m in Sources */,
 				D24E471C17D7EFA900AC886B /* FPPCGiftSearchViewController.m in Sources */,
 				D240C20D17FD30C900E2647F /* FPPCAmount.m in Sources */,
+				D24DA76E1803800800F6AC65 /* FPPCTextField.m in Sources */,
 				D24E472417D812E700AC886B /* FPPCViewController.m in Sources */,
 				D2CD555617DAF45B003BBE30 /* FPPCSourceCell.m in Sources */,
 				D2CD555A17DAF469003BBE30 /* FPPCGiftCell.m in Sources */,
 				D2CD55AA17DF6A21003BBE30 /* FPPCActionSheet.m in Sources */,
-				D240C20A17FD30C900E2647F /* FPPCSource.m in Sources */,
+				D24DA76518029DAC00F6AC65 /* FPPCSource.m in Sources */,
 				D2CAAE9917E0C49900EF2FF5 /* FPPCGiftFormCell.m in Sources */,
 				D2CAAEB117E2C21300EF2FF5 /* UIColor+FPPC.m in Sources */,
 				D240C20717FD30C800E2647F /* FPPCGift.m in Sources */,

@@ -6,7 +6,6 @@
 #import "UIColor+FPPC.h"
 
 @interface FPPCToolbar ()
-@property (nonatomic, strong) UIViewController<FPPCToolbarDelegate> *controller;
 @property (nonatomic, strong) FPPCSegmentedControl *segmentedControl;
 @property (nonatomic, strong) UIBarButtonItem *doneButton;
 
@@ -14,8 +13,6 @@ enum FPPCSegmentedControlIndex {
     NEXT_INDEX = 0,
     PREVIOUS_INDEX
 };
-- (void)previous;
-- (void)next;
 @end
 
 @implementation FPPCToolbar
@@ -23,8 +20,9 @@ enum FPPCSegmentedControlIndex {
 @synthesize segmentedControl;
 @synthesize textField = _textField;
 @synthesize doneButton;
+@synthesize nextIndexPath;
 
-- (id)initWithDelegate:(UIViewController<FPPCToolbarDelegate> *)delegate {
+- (id)initWithController:(UIViewController<FPPCToolbarDelegate> *)delegate {
     if ((self = [super initWithFrame:CGRectMake(10.0, 0.0, 310.0, 40.0)])) {
         BOOL isIOS7 = [[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0;
         
@@ -66,17 +64,17 @@ enum FPPCSegmentedControlIndex {
     self.doneButton.target = textField;
     
     // Disable 'Previous'
-    if (textField.tag == 1) {
-        [self.segmentedControl setEnabled:NO forSegmentAtIndex:0];
-    } else {
+    if ([self.controller hasPrevious:textField]) {
         [self.segmentedControl setEnabled:YES forSegmentAtIndex:0];
+    } else {
+        [self.segmentedControl setEnabled:NO forSegmentAtIndex:0];
     }
     
     // Disable 'next'
-    if (((textField.tag == self.controller.maxIndex) && ![self.controller.view viewWithTag:(-1)]) || (!([self.controller.view viewWithTag:textField.tag-1]) && (textField.tag < 0))) {
-        [self.segmentedControl setEnabled:NO forSegmentAtIndex:1];
-    } else {
+    if ([self.controller hasNext:textField]) {
         [self.segmentedControl setEnabled:YES forSegmentAtIndex:1];
+    } else {
+        [self.segmentedControl setEnabled:NO forSegmentAtIndex:1];
     }
     
     _textField = textField;
@@ -84,47 +82,9 @@ enum FPPCSegmentedControlIndex {
 
 - (void)nextPrevious:(FPPCSegmentedControl *)sender {
     if (sender.selectedSegmentIndex == PREVIOUS_INDEX)
-        [self next];
+        [self.controller next:self.textField];
     else if (sender.selectedSegmentIndex == NEXT_INDEX)
-        [self previous];
-}
-
-- (void)previous {
-    
-    // Allow for a second list of negative tags
-    NSInteger previousIndex;
-    if (self.textField.tag == -1) {
-        previousIndex = self.controller.maxIndex;
-    }
-    else if (self.textField.tag < 0) {
-        previousIndex = self.textField.tag + 1;
-    }
-    else {
-        previousIndex = self.textField.tag - 1;
-    }
-    
-    // Change text fields
-    [self.textField resignFirstResponder];
-    [(UITextField *)[self.controller.view viewWithTag:previousIndex] becomeFirstResponder];
-}
-
-- (void)next {
-    
-    // Allow for a second list of negative tags
-    NSInteger nextIndex;
-    if (self.textField.tag == self.controller.maxIndex) {
-        nextIndex = -1;
-    }
-    else if (self.textField.tag < 0) {
-        nextIndex = self.textField.tag - 1;
-    }
-    else {
-        nextIndex = self.textField.tag + 1;
-    }
-    
-    // Change text fields
-    [self.textField resignFirstResponder];
-    [(UITextField *)[self.controller.view viewWithTag:nextIndex] becomeFirstResponder];
+        [self.controller previous:self.textField];
 }
 
 @end

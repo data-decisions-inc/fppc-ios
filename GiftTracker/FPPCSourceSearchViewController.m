@@ -61,7 +61,7 @@
     ((FPPCSourceCell *)cell).business.text = [NSString stringWithFormat:@"%@%@",source.business ? source.business : @"",lobbying,nil];
     
     // Display remaining gift limit
-    NSDecimalNumber *limit = [self giftLimitWithSource:source forDate:self.date];
+    NSDecimalNumber *limit = source.limit;
     NSString *limitString = [self.currencyFormatter stringFromNumber:limit];
     ((FPPCSourceCell *)cell).remainingLimit.textColor = ([limit compare:[NSDecimalNumber zero]] == NSOrderedAscending) ? [UIColor redColor] : [UIColor FPPCGreenColor];
     ((FPPCSourceCell *)cell).remainingLimit.text = limitString;
@@ -82,45 +82,6 @@
     
     // Tell the delegate which source was added
     [self.delegate didAddSource:source];
-}
-
-/**
- The targeted user cannot received gifts that amount to more than X dollars (the limit) per calendar year per source (donor). If the donor is a registered lobbyist, the user cannot received more than Y dollars worth of gift per month. (special case)
- 
- The gift limit X and lobbyist gift limit Y varies every year, the state legislature vote and decide that.
- 
- Right now, these limits are hard-coded and can be updated manually via updates to the application. In the future, it is recommended that these values be pulled from a web page that is updated when new legislation comes through.
- */
-- (NSDecimalNumber *)giftLimitWithSource:(FPPCSource *)source forDate:(NSDate *)date {
-    NSDecimalNumber *limit;
-    
-    // Calculate remaining gift limit for lobbying sources
-    if ([source.isLobbying boolValue]) {
-        limit = [NSDecimalNumber decimalNumberWithDecimal:[[NSNumber numberWithInt:LOBBYING_LIMIT] decimalValue]];
-        for (FPPCAmount *amount in source.amount) {
-            FPPCGift *gift = amount.gift;
-             NSDateComponents *amountDateComponents = [[NSCalendar currentCalendar] components:NSMonthCalendarUnit|NSYearCalendarUnit fromDate:gift.date];
-            NSDateComponents *rangeDateComponents = [[NSCalendar currentCalendar] components:NSMonthCalendarUnit|NSYearCalendarUnit fromDate:[self date]];
-            if(amountDateComponents.year == rangeDateComponents.year && amountDateComponents.month == rangeDateComponents.month) {
-                limit = [limit decimalNumberBySubtracting:[NSDecimalNumber decimalNumberWithDecimal:[amount.value decimalValue]]];
-            }
-        }
-    }
-    
-    // Calculate remaining gift limit for non-lobbying sources
-    else {
-        limit = [NSDecimalNumber decimalNumberWithDecimal:[[NSNumber numberWithInt:NON_LOBBYING_LIMIT] decimalValue]];
-        for (FPPCAmount *amount in source.amount) {
-            FPPCGift *gift = amount.gift;
-            NSDateComponents *amountDateComponents = [[NSCalendar currentCalendar] components:NSYearCalendarUnit fromDate:gift.date];
-            NSDateComponents *rangeDateComponents = [[NSCalendar currentCalendar] components:NSYearCalendarUnit fromDate:[self date]];
-            if(amountDateComponents.year == rangeDateComponents.year) {
-                limit = [limit decimalNumberBySubtracting:[NSDecimalNumber decimalNumberWithDecimal:[amount.value decimalValue]]];
-            }
-        }
-    }
-    
-    return limit;
 }
 
 #pragma mark - Alert view

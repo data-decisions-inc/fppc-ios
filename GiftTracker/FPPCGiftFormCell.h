@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FPPCTextField.h"
 
 @interface FPPCGiftFormCell : UITableViewCell
 @property (strong, nonatomic) IBOutlet UILabel *name;
-@property (strong, nonatomic) IBOutlet UITextField *amount;
+@property (strong, nonatomic) IBOutlet FPPCAmountField *amount;
 @end

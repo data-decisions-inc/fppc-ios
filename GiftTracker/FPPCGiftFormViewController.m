@@ -12,12 +12,18 @@
 #import "FPPCAmount.h"
 #import "FPPCActionSheet.h"
 #import "FPPCGiftsViewController.h"
+#import "FPPCTextField.h"
 
 @interface FPPCGiftFormViewController ()
 - (void)updateTotal;
 - (void)updateTextFieldAmount:(UITextField *)textField;
-- (void)scrollView:(UIScrollView *)scrollView toFocusTextField:(UITextField *)textField;
-#define NUMBER_OF_TEXT_FIELDS 4
+- (id)view:(UIView *)view superviewWithClass:(Class)class;
+#define FPPC_GIFT_SUMMARY_MINIMUM_TAG 1
+#define FPPC_GIFT_SUMMARY_MAXIMUM_TAG 4
+enum kFPPCNextPrevious {
+    NEXT = 0,
+    PREVIOUS
+};
 @end
 
 @implementation FPPCGiftFormViewController
@@ -39,7 +45,7 @@
     [super viewDidLoad];
     
     // Create input accessory view for keyboard
-    self.keyboardToolbar = [[FPPCToolbar alloc] initWithDelegate:self];
+    self.keyboardToolbar = [[FPPCToolbar alloc] initWithController:self];
     [self registerForKeyboardNotifications];
     
     // Display summary
@@ -51,7 +57,7 @@
     
     NSDecimalNumber *total = [NSDecimalNumber zero];
     for (FPPCAmount *amount in gift.amount) {
-        total = [total decimalNumberByAdding:[NSDecimalNumber decimalNumberWithDecimal:[amount.value decimalValue]]];
+        total = [total decimalNumberByAdding:amount.value];
     }
     self.total.text = [self.currencyFormatter stringFromNumber:total];
     
@@ -101,7 +107,7 @@
 - (void)updateTotal {
     NSDecimalNumber *total = [NSDecimalNumber zero];
     for (FPPCAmount *amount in [self.fetchedResultsController fetchedObjects]) {
-        total = [total decimalNumberByAdding:[NSDecimalNumber decimalNumberWithDecimal:[amount.value decimalValue]]];
+        total = [total decimalNumberByAdding:amount.value];
     }
     self.total.text = [self.currencyFormatter stringFromNumber:total];
 }
@@ -111,24 +117,10 @@
 }
 
 #pragma mark - UITextField
-#pragma 
-
-- (NSInteger)maxIndex {
-    return NUMBER_OF_TEXT_FIELDS;
-}
-
-- (void)scrollView:(UIScrollView *)scrollView toFocusTextField:(UITextField *)textField {
-    UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, keyboardSize.height-self.keyboardToolbar.frame.size.height, 0.0);
-    scrollView.contentInset = contentInsets;
-    scrollView.scrollIndicatorInsets = contentInsets;
-    
-    CGRect aRect = scrollView.frame;
-    aRect.size.height -= (keyboardSize.height+self.keyboardToolbar.frame.size.height);
-    [scrollView scrollRectToVisible:self.keyboardToolbar.textField.frame animated:YES];
-}
+#pragma
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
-    
+
     // Present the custom accessory view for this keyboard
     textField.inputAccessoryView = self.keyboardToolbar;
     [self.keyboardToolbar setTextField:textField];
@@ -144,33 +136,34 @@
         NSDateComponents *today = [[NSCalendar currentCalendar] components:NSDayCalendarUnit fromDate:[NSDate date]];
         [self.dayPickerView selectRow:today.day-1 inComponent:0 animated:YES];
     }
-    
-    [self scrollView:self.tableView toFocusTextField:textField];
-    
+
     return YES;
 }
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
-    [self scrollView:self.tableView toFocusTextField:textField];
 }
 
 - (void)updateTextFieldAmount:(UITextField *)textField {
+    
     // Save new amount value
-    if (textField.tag < 0) {
+    BOOL isSummaryView = [textField isKindOfClass:[FPPCSummaryField class]];
+    if (!isSummaryView) {
         
         // Keep currency format
-        NSNumber *amount = [self.currencyFormatter numberFromString:textField.text];
-        if (!amount) {
+        NSNumber *value = [self.currencyFormatter numberFromString:textField.text];
+        if (!value) {
             NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
             numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
-            amount = [numberFormatter numberFromString:textField.text];
+            value = [numberFormatter numberFromString:textField.text];
         }
-        if (!amount) amount = [NSNumber numberWithInt:0];
-        textField.text = [self.currencyFormatter stringFromNumber:amount];
+        if (!value) value = [NSNumber numberWithInt:0];
+        textField.text = [self.currencyFormatter stringFromNumber:value];
         
-        // Save
-        if ([self.fetchedResultsController fetchedObjects].count > (textField.tag*(-1))-1)
-            ((FPPCAmount *)[[self.fetchedResultsController fetchedObjects] objectAtIndex:(textField.tag*(-1))-1]).value = [self.currencyFormatter numberFromString:textField.text];
+        // Save if this is an amount field
+        id superview = [self view:textField superviewWithClass:[FPPCGiftFormCell class]];
+        FPPCGiftFormCell *cell = (FPPCGiftFormCell *)superview;
+        FPPCAmount *amount = ((FPPCAmount *)[self.fetchedResultsController objectAtIndexPath:[self.tableView indexPathForCell:cell]]);
+        amount.value = [NSDecimalNumber decimalNumberWithDecimal:[[self.currencyFormatter numberFromString:textField.text] decimalValue]];
         
         // Update summary
         [self updateTotal];
@@ -258,7 +251,7 @@
 {
     // Add source to gift
     FPPCAmount *amount = (FPPCAmount *)[NSEntityDescription insertNewObjectForEntityForName:@"FPPCAmount" inManagedObjectContext:((FPPCAppDelegate *)[[UIApplication sharedApplication] delegate]).managedObjectContext];
-    amount.value = [NSNumber numberWithInt:0];
+    amount.value = [NSDecimalNumber zero];
     amount.source = source;
     [self.gift addAmountObject:amount];
     
@@ -275,16 +268,13 @@
     // Remove object from context
     NSUndoManager *undoManager = [((FPPCAppDelegate *)[[UIApplication sharedApplication] delegate]).managedObjectContext undoManager];
     [undoManager endUndoGrouping];
-    [undoManager undo];
+    [undoManager undoNestedGroup];
 
     if (self.gift && self.source) {
         [((FPPCAppDelegate *)[[UIApplication sharedApplication] delegate]).managedObjectContext deleteObject:self.gift];
     }
 
-    _fetchedResultsController.delegate = nil;
-    _fetchedResultsController = nil;
-    
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self.delegate didUpdateGift:nil];
 }
 
 - (IBAction)save:(id)sender {
@@ -305,10 +295,8 @@
     [(FPPCAppDelegate *)[[UIApplication sharedApplication] delegate] saveContext];
     
     // Pass this source back to the dashboard
-    [self.delegate didUpdateGift];
-    
-    _fetchedResultsController.delegate = nil;
-    _fetchedResultsController = nil;
+    [self.delegate didUpdateGift:self.gift];
+
     [TestFlight passCheckpoint:@"GIFT - SAVE"];
 }
 
@@ -343,11 +331,12 @@
 
     // Fetch the data for this amount
     FPPCAmount *amount = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    ((FPPCGiftFormCell *)cell).amount.indexPath = indexPath;
+    [amount addObservers];
     
     // Display source name and amount
     ((FPPCGiftFormCell *)cell).name.text = amount.source.name;
     ((FPPCGiftFormCell *)cell).amount.text = [self.currencyFormatter stringFromNumber:amount.value];
-    ((FPPCGiftFormCell *)cell).amount.tag = ((-1)*indexPath.row)-1;
     return cell;
 }
 
@@ -412,16 +401,18 @@
     [fetchRequest setPredicate:giftPredicate];
     
     // Edit the sort key as appropriate.
-    NSSortDescriptor *sort = [[NSSortDescriptor alloc]
+    NSSortDescriptor *sortByValue = [[NSSortDescriptor alloc]
                               initWithKey:@"value" ascending:YES];
-    [fetchRequest setSortDescriptors:[NSArray arrayWithObject:sort]];
+    NSSortDescriptor *sortByName = [[NSSortDescriptor alloc]
+                              initWithKey:@"source.name" ascending:YES];
+    [fetchRequest setSortDescriptors:[NSArray arrayWithObjects:sortByValue,sortByName, nil]];
     
     // Edit the section name key path and cache name if appropriate.
     // nil for section name key path means "no sections".
     NSFetchedResultsController *theFetchedResultsController =
     [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
                                         managedObjectContext:((FPPCAppDelegate *)[[UIApplication sharedApplication] delegate]).managedObjectContext sectionNameKeyPath:nil
-                                                   cacheName:@"FPPCGiftForm"];
+                                                   cacheName:nil];
     
     theFetchedResultsController.delegate = self;
     self.fetchedResultsController = theFetchedResultsController;
@@ -509,11 +500,160 @@
 {
     NSDictionary* info = [aNotification userInfo];
     keyboardSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
-    [self scrollView:self.tableView toFocusTextField:self.keyboardToolbar.textField];
+    
+    UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, keyboardSize.height-self.keyboardToolbar.frame.size.height, 0.0);
+    self.tableView.contentInset = contentInsets;
+    self.tableView.scrollIndicatorInsets = contentInsets;
+    
+    CGRect aRect = self.tableView.frame;
+    aRect.size.height -= (keyboardSize.height+self.keyboardToolbar.frame.size.height);
+    
+    if ([self.keyboardToolbar.textField isKindOfClass:[FPPCAmountField class]]) {
+        [self scrollToAmount:(FPPCAmountField *)self.keyboardToolbar.textField];
+    }
 }
 
 - (void)keyboardWillBeHidden:(NSNotification*)aNotification
 {
+}
+
+#pragma mark - Keyboard delegate
+#pragma
+
+- (id)view:(UIView *)view superviewWithClass:(Class)class {
+    id superview = view;
+    for (int i=0; i<4; i++) {
+        superview = [superview superview];
+        if ([superview isKindOfClass:[UITableViewCell class]]) {
+            return superview;
+        }
+    }
+    return nil;
+}
+
+- (NSInteger)maxIndex {
+    return FPPC_GIFT_SUMMARY_MAXIMUM_TAG;
+}
+
+- (BOOL)hasPrevious:(UIView *)view {
+    return [self isField:(UITextField *)view inDirection:PREVIOUS];
+}
+
+- (BOOL)hasNext:(UIView *)view {
+    return [self isField:(UITextField *)view inDirection:NEXT];
+}
+
+- (void)previous:(UIView *)view {
+    UITextField *firstResponder = [self field:(UITextField *)view inDirection:PREVIOUS];
+    if (firstResponder) {
+        [view resignFirstResponder];
+        [firstResponder becomeFirstResponder];
+    }
+}
+
+- (void)next:(UIView *)view {
+    UITextField *firstResponder = [self field:(UITextField *)view inDirection:NEXT];
+    if (firstResponder) {
+        [view resignFirstResponder];
+        [firstResponder becomeFirstResponder];
+    }
+}
+
+- (BOOL)isField:(UITextField *)field inDirection:(enum kFPPCNextPrevious)direction {
+    if ((direction == PREVIOUS) && field.tag == 0 && [field isKindOfClass:[FPPCSummaryField class]]) {
+        return NO;
+    }
+    else if ((direction == NEXT) && [field isKindOfClass:[FPPCAmountField class]] && (((FPPCAmountField *)field).indexPath.row+1) == [[[self fetchedResultsController] fetchedObjects] count]) {
+        return NO;
+    }
+    else return YES;
+}
+- (BOOL)isAmountField:(UITextField *)field inDirection:(enum kFPPCNextPrevious)direction {
+    if (direction == NEXT)
+        return (!((field.tag < FPPC_GIFT_SUMMARY_MAXIMUM_TAG) && (field.tag >= FPPC_GIFT_SUMMARY_MINIMUM_TAG)));
+    else
+        return [field respondsToSelector:@selector(indexPath)] && ([(FPPCAmountField *)field indexPath].row > 0);
+}
+- (UITextField *)field:(UITextField *)field inDirection:(enum kFPPCNextPrevious)direction {
+    if ([self isAmountField:field inDirection:direction]) {
+        if (direction == NEXT) {
+            if (field.tag == FPPC_GIFT_SUMMARY_MAXIMUM_TAG)
+                [self scrollToFirstAmount];
+            else
+                [self scrollToAmount:(FPPCAmountField *)field inDirection:direction];
+        } else {
+            [self scrollToAmount:(FPPCAmountField *)field inDirection:direction];
+        }
+        return nil;
+    } else {
+        if (direction == NEXT)
+            return [self summaryField:(FPPCSummaryField *)field inDirection:direction];
+        else {
+            if (field.tag > FPPC_GIFT_SUMMARY_MINIMUM_TAG)
+                return [self summaryField:(FPPCSummaryField *)field inDirection:direction];
+            else
+                return [self lastSummaryField];
+        }
+    }
+}
+- (FPPCSummaryField *)summaryField:(FPPCSummaryField *)textField inDirection:(enum kFPPCNextPrevious)direction {
+    NSInteger offset = (direction == NEXT) ? 1 : -1;
+    return (FPPCSummaryField *)[self.view viewWithTag:textField.tag + offset];
+}
+- (FPPCSummaryField *)lastSummaryField {
+    return (FPPCSummaryField *)[self.view viewWithTag:FPPC_GIFT_SUMMARY_MAXIMUM_TAG];
+}
+- (void)scrollToFirstAmount {
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+    self.keyboardToolbar.nextIndexPath = indexPath;
+    [self scrollToAmountAtIndexPath:indexPath
+                   atScrollPosition:UITableViewScrollPositionTop];
+}
+- (void)scrollToAmount:(FPPCAmountField *)textField {
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:textField.indexPath.row inSection:0];
+    self.keyboardToolbar.nextIndexPath = indexPath;
+    [self scrollToAmountAtIndexPath:indexPath
+                   atScrollPosition:UITableViewScrollPositionTop];
+}
+- (void)scrollToAmount:(FPPCAmountField *)textField inDirection:(enum kFPPCNextPrevious)direction {
+    NSInteger offset = (direction == NEXT) ? 1 : -1;
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:textField.indexPath.row+offset inSection:0];
+    self.keyboardToolbar.nextIndexPath = indexPath;
+    [self scrollToAmountAtIndexPath:indexPath
+                   atScrollPosition:UITableViewScrollPositionTop];
+}
+
+- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
+    [self didScrollToAmount];
+}
+
+- (void)didScrollToAmount {
+    if (self.keyboardToolbar.nextIndexPath) {
+        FPPCGiftFormCell *cell = (FPPCGiftFormCell *)[self.tableView cellForRowAtIndexPath:self.keyboardToolbar.nextIndexPath];
+        [self.keyboardToolbar setTextField:cell.amount];
+        [cell.amount becomeFirstResponder];
+    }
+}
+
+- (void)scrollToAmountAtIndexPath:(NSIndexPath *)indexPath atScrollPosition:(UITableViewScrollPosition)position {
+    
+    CGFloat originalOffset = self.tableView.contentOffset.y;
+    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:position animated:NO];
+    CGFloat offset = self.tableView.contentOffset.y;
+    
+    if (originalOffset == offset)
+    {
+        // scroll animation not required because it's already scrolled exactly there
+        [self didScrollToAmount];
+    }
+    else
+    {
+        // We know it will scroll to a new position
+        // Return to originalOffset. animated:NO is important
+        [self.tableView setContentOffset:CGPointMake(0, originalOffset) animated:NO];
+        // Do the scroll with animation so `scrollViewDidEndScrollingAnimation:` will execute
+        [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:position animated:YES];
+    }
 }
 
 @end

@@ -19,6 +19,7 @@
 @property (strong, nonatomic) NSArray *searchResults;
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 @property (strong, nonatomic) FPPCViewController *delegate;
+@property (assign, nonatomic) BOOL searchBarShouldRemainActive;
 - (void)filterContentForSearchText:(NSString*)searchText scope:(NSString*)scope;
 - (void)deselectTableViewCell;
 - (void)reloadTableView;

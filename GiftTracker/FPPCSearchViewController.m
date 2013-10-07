@@ -26,6 +26,7 @@
 @synthesize fetchedResultsController = _fetchedResultsController;
 @synthesize delegate;
 @synthesize navBar;
+@synthesize searchBarShouldRemainActive;
 
 #pragma mark - View lifecycle
 #pragma 
@@ -187,6 +188,8 @@
                              withRowAnimation:UITableViewRowAnimationFade];
             [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
                              withRowAnimation:UITableViewRowAnimationFade];
+            [self reloadTableView];
+            [self reloadSummary];
             break;
     }
 }
@@ -241,13 +244,15 @@
 }
 
 - (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {
-    
-    // Move the search bar down
-    [UIView animateWithDuration:.4
-                     animations:^{
-                         self.view.center = CGPointMake(originalCenter.x, originalCenter.y);
-                     }
-                     completion:nil];
+
+    if (!self.searchBarShouldRemainActive) {
+        // Move the search bar down
+        [UIView animateWithDuration:.4
+                         animations:^{
+                             self.view.center = CGPointMake(originalCenter.x, originalCenter.y);
+                         }
+                         completion:nil];
+    }
 }
 
 #pragma mark - FetchedResults

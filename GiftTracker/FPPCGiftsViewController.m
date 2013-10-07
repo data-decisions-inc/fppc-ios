@@ -12,7 +12,6 @@
 
 @implementation FPPCGiftsViewController
 @synthesize fetchedResultsController = _fetchedResultsController;
-@synthesize date;
 
 #pragma mark - Table view
 #pragma
@@ -33,7 +32,7 @@
     NSMutableSet *sources = [[NSMutableSet alloc] init];
     NSDecimalNumber *total = [NSDecimalNumber zero];
     for (FPPCAmount *amount in gift.amount) {
-        total = [total decimalNumberByAdding:[NSDecimalNumber decimalNumberWithDecimal:[amount.value decimalValue]]];
+        total = [total decimalNumberByAdding:amount.value];
         [sources addObject:amount.source];
     }
     ((FPPCGiftCell *)cell).sources.text = (sources.count == 0) ? @"": [NSString stringWithFormat:@"From: %@",[[[sources valueForKey:@"name"] allObjects] componentsJoinedByString:@", "]];
@@ -55,7 +54,7 @@
 
 #pragma mark - Delegate
 #pragma
-- (void)didUpdateGift {
+- (void)didUpdateGift:(FPPCGift *)gift {
     [self reloadTableView];
     [self dismissViewControllerAnimated:YES completion:nil];
 };
@@ -81,7 +80,7 @@
     
     // Only fetch gifts for the selected year
     NSDate *yearStart, *yearEnd;
-    NSDateComponents *year = [[NSCalendar currentCalendar] components:NSYearCalendarUnit fromDate:date];
+    NSDateComponents *year = [[NSCalendar currentCalendar] components:NSYearCalendarUnit fromDate:[FPPCSource date]];
     
     NSDateComponents *components = [[NSDateComponents alloc] init];
     [components setDay:1];

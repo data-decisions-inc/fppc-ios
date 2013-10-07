@@ -92,8 +92,10 @@
  * When an unrecoverable error occurs, tell the user to restart the application.
  */
 - (void)showErrorMessage {
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Uh Oh!" message:@"The database is misbehaving. Please restart this application." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:nil];
-    [alert show];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Uh Oh!" message:@"The database is misbehaving. Please restart this application." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:nil];
+        [alert show];
+    });
 }
 
 - (void)initializeCoreDataStack
@@ -124,6 +126,7 @@
     moc = [NSManagedObjectContext alloc];
     moc = [moc initWithConcurrencyType:NSMainQueueConcurrencyType];
     [moc setPersistentStoreCoordinator:psc];
+    moc.undoManager = [[NSUndoManager alloc] init];
     
     [self setManagedObjectContext:moc];
     
@@ -192,13 +195,13 @@
         coordinator = [[self managedObjectContext] persistentStoreCoordinator];
         NSPersistentStore *store = nil;
         store = [coordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:options error:&error];
+
+        if (!store) {
+            TFLog(@"ERROR: Failed to create persistent store - %@", error);
+            [self showErrorMessage];
+        }
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            if (!store) {
-                TFLog(@"ERROR: Failed to create persistent store - %@", error);
-                [self showErrorMessage];
-            }
-            
             [self contextInitialized];
         });
     });

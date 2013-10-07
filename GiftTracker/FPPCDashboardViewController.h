@@ -11,10 +11,11 @@
 #import "FPPCViewController.h"
 #import "FPPCSourceSearchViewController.h"
 #import "FPPCSourceFormViewController.h"
+#import "FPPCSourceViewController.h"
 #import "FPPCGiftFormViewController.h"
 #import "FPPCKeyboard.h"
 
-@interface FPPCDashboardViewController : FPPCSourceSearchViewController <UIPickerViewDelegate, UIPickerViewDataSource, MFMailComposeViewControllerDelegate, UITextFieldDelegate, FPPCToolbarDelegate, FPPCSourceSearchViewControllerDelegate, FPPCSourceFormViewControllerDelegate, FPPCGiftFormViewControllerDelegate, UIAlertViewDelegate>
+@interface FPPCDashboardViewController : FPPCSourceSearchViewController <UIPickerViewDelegate, UIPickerViewDataSource, MFMailComposeViewControllerDelegate, UITextFieldDelegate, FPPCToolbarDelegate, FPPCSourceSearchViewControllerDelegate, FPPCSourceFormViewControllerDelegate, FPPCGiftFormViewControllerDelegate, FPPCSourceViewControllerDelegate, UIAlertViewDelegate>
 
 @property (strong, nonatomic) IBOutlet UITextField *month;
 @property (strong, nonatomic) IBOutlet UITextField *year;

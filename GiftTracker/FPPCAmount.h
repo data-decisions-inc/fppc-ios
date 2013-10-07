@@ -13,8 +13,8 @@
 
 @interface FPPCAmount : NSManagedObject
 
-@property (nonatomic, retain) NSNumber * value;
+@property (nonatomic, retain) NSDecimalNumber * value;
 @property (nonatomic, retain) FPPCGift *gift;
 @property (nonatomic, retain) FPPCSource *source;
-
+- (void)addObservers;
 @end
