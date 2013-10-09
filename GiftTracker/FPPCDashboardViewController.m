@@ -545,23 +545,27 @@
 #pragma
 
 - (BOOL)hasPrevious:(UIView *)view {
-    if (view.tag == FPPC_DASHBOARD_MINIMUM_TAG) return NO;
     return YES;
 }
 
 - (BOOL)hasNext:(UIView *)view {
-    if (view.tag == FPPC_DASHBOARD_MAXIMUM_TAG) return NO;
     return YES;
 }
 
 - (void)previous:(UIView *)view {
     [view resignFirstResponder];
-    [[self.view viewWithTag:view.tag - 1] becomeFirstResponder];
+    if (view.tag == FPPC_DASHBOARD_MINIMUM_TAG)
+        [[self.view viewWithTag:FPPC_DASHBOARD_MAXIMUM_TAG] becomeFirstResponder];
+    else
+        [[self.view viewWithTag:view.tag - 1] becomeFirstResponder];
 }
 
 - (void)next:(UIView *)view {
     [view resignFirstResponder];
-    [[self.view viewWithTag:view.tag + 1] becomeFirstResponder];
+    if (view.tag == FPPC_DASHBOARD_MAXIMUM_TAG)
+        [[self.view viewWithTag:FPPC_DASHBOARD_MINIMUM_TAG] becomeFirstResponder];
+    else
+        [[self.view viewWithTag:view.tag + 1] becomeFirstResponder];
 }
 
 @end

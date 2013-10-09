@@ -12,5 +12,5 @@
 @end
 
 @implementation FPPCAmountField
-@synthesize indexPath;
+@synthesize amount;
 @end

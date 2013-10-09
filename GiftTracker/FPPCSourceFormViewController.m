@@ -20,7 +20,7 @@
 
 @implementation FPPCSourceFormViewController
 @synthesize source;
-@synthesize name, business, email, phone, lobbying, isLobbying, isLobbying_iOS6;
+@synthesize name, business, email, phone, lobbying, lobbyingLabel, isLobbying, isLobbying_iOS6;
 @synthesize street, street2, city, state, zipcode;
 @synthesize scrollView = _scrollView;
 @synthesize keyboardToolbar;
@@ -125,14 +125,14 @@
 }
 
 - (void)scrollView:(UIScrollView *)scrollView toFocusTextField:(UITextField *)textField {
-    UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, keyboardSize.height, 0.0);
+    UIEdgeInsets contentInsets = UIEdgeInsetsMake(self.name.frame.size.height, 0.0, keyboardSize.height+self.keyboardToolbar.frame.size.height, 0.0);
     scrollView.contentInset = contentInsets;
     scrollView.scrollIndicatorInsets = contentInsets;
     
-    CGRect aRect = self.view.frame;
-    aRect.origin.y = navigationBar.frame.size.height;
-    aRect.size.height -= (keyboardSize.height+self.keyboardToolbar.frame.size.height+navigationBar.frame.size.height*2);
-    [scrollView scrollRectToVisible:self.keyboardToolbar.textField.frame animated:YES];
+    if (textField.tag == FPPC_SOURCE_MAXIMUM_TAG)
+        [scrollView scrollRectToVisible:self.lobbyingLabel.frame animated:YES];
+    else
+        [scrollView scrollRectToVisible:self.keyboardToolbar.textField.frame animated:YES];
 }
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
@@ -172,11 +172,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWasShown:)
                                                  name:UIKeyboardDidShowNotification object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillBeHidden:)
-                                                 name:UIKeyboardWillHideNotification object:nil];
-    
 }
 
 - (void)keyboardWasShown:(NSNotification*)aNotification
@@ -188,31 +183,31 @@
     [self scrollView:self.scrollView toFocusTextField:self.keyboardToolbar.textField];
 }
 
-- (void)keyboardWillBeHidden:(NSNotification*)aNotification
-{
-}
-
 #pragma mark - Keyboard delegate
 #pragma
 
 - (BOOL)hasPrevious:(UIView *)view {
-    if (view.tag == FPPC_SOURCE_MINIMUM_TAG) return NO;
     return YES;
 }
 
 - (BOOL)hasNext:(UIView *)view {
-    if (view.tag == FPPC_SOURCE_MAXIMUM_TAG) return NO;
     return YES;
 }
 
 - (void)previous:(UIView *)view {
     [view resignFirstResponder];
-    [[self.view viewWithTag:view.tag - 1] becomeFirstResponder];
+    if (view.tag == FPPC_SOURCE_MINIMUM_TAG)
+        [[self.view viewWithTag:FPPC_SOURCE_MAXIMUM_TAG] becomeFirstResponder];
+    else
+        [[self.view viewWithTag:view.tag - 1] becomeFirstResponder];
 }
 
 - (void)next:(UIView *)view {
     [view resignFirstResponder];
-    [[self.view viewWithTag:view.tag + 1] becomeFirstResponder];
+    if (view.tag == FPPC_SOURCE_MAXIMUM_TAG)
+        [[self.view viewWithTag:FPPC_SOURCE_MINIMUM_TAG] becomeFirstResponder];
+    else
+        [[self.view viewWithTag:view.tag + 1] becomeFirstResponder];
 }
 
 @end

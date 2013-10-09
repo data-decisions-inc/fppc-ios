@@ -32,6 +32,7 @@
 @property (strong, nonatomic) IBOutlet UITextField *email;
 @property (strong, nonatomic) IBOutlet UITextField *phone;
 @property (strong, nonatomic) IBOutlet UIView *lobbying;
+@property (strong, nonatomic) IBOutlet UILabel *lobbyingLabel;
 @property (strong, nonatomic) DCRoundSwitch *isLobbying_iOS6;
 @property (strong, nonatomic) UISwitch *isLobbying;
 @property (strong, nonatomic) IBOutlet UIScrollView *scrollView;

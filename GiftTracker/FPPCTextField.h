@@ -7,10 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FPPCAmount.h"
 
 @interface FPPCSummaryField : UITextField
 @end
 
 @interface FPPCAmountField : UITextField
-@property (nonatomic, strong) NSIndexPath *indexPath;
+@property (nonatomic, strong) FPPCAmount *amount;
 @end
