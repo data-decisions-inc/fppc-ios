@@ -586,7 +586,13 @@ enum kFPPCNextPrevious {
 }
 
 - (void)scrollView:(UIScrollView *)scrollView toFocusTextField:(UITextField *)textField {
-    UIEdgeInsets contentInsets = UIEdgeInsetsMake(self.total.frame.size.height, 0.0, keyboardSize.height, 0.0);
+    BOOL isIOS7 = [[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0;
+
+    UIEdgeInsets contentInsets;
+    if (isIOS7)
+        contentInsets = UIEdgeInsetsMake(self.total.frame.size.height, 0.0, keyboardSize.height-self.keyboardToolbar.frame.size.height, 0.0);
+    else
+        contentInsets = UIEdgeInsetsMake(self.total.frame.size.height, 0.0, keyboardSize.height, 0.0);
     scrollView.contentInset = contentInsets;
     scrollView.scrollIndicatorInsets = contentInsets;
     
